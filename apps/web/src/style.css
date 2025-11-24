@@ -1,0 +1,18 @@
+/* 在你的全局 CSS 文件中，如 styles.css 或 main.css */
+:root {
+  --color-primary: #3b82f6;
+  --color-secondary: #10b981;
+  --color-background: #ffffff;
+  --color-foreground: #1f2937;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
+}
+
+.dark {
+  --color-primary: #60a5fa;
+  --color-secondary: #34d399;
+  --color-background: #111827;
+  --color-foreground: #f9fafb;
+  --color-muted: #9ca3af;
+  --color-border: #374151;
+}

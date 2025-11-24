@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// 用户表
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String   // bcrypt 加密
+  email     String?  @unique
+  role      String   @default("user") // 'admin' | 'user'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  accounts  Account[]
+}
+
+// 平台表
+model Platform {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  icon        String?
+  description String?
+  enabled     Boolean   @default(true)
+  adapterType String    // 'http' | 'browser'
+  config      String    @default("{}") // JSON string: 平台配置（URL、选择器等）
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  accounts    Account[]
+
+  @@index([name])
+}
+
+// 账号表
+model Account {
+  id         String   @id @default(cuid())
+  platformId String
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String   // 账号备注名
+  cookies    String   // 加密存储的 Cookie
+  userAgent  String
+  headers    String?  @default("{}") // JSON string: 自定义 Headers
+  proxy      String?  @default("{}") // JSON string: 代理配置
+  enabled    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  tasks      Task[]
+
+  @@index([platformId])
+  @@index([userId])
+}
+
+// 任务表
+model Task {
+  id         String    @id @default(cuid())
+  accountId  String
+  account    Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  name       String
+  schedule   String    // Cron 表达式
+  enabled    Boolean   @default(true)
+  retryTimes Int       @default(3)
+  timeout    Int       @default(30000) // 毫秒
+  lastRunAt  DateTime?
+  nextRunAt  DateTime?
+  config     String?   @default("{}") // JSON string: 任务特定配置
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  logs       Log[]
+
+  @@index([accountId])
+  @@index([enabled])
+}
+
+// 日志表
+model Log {
+  id         String    @id @default(cuid())
+  taskId     String
+  task       Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  status     String    // 'success' | 'failed' | 'running'
+  message    String?
+  details    String?   @default("{}") // JSON string: 详细信息
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+
+  @@index([taskId])
+  @@index([status])
+  @@index([startedAt])
+}
+
+// 通知配置表
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // 'email' | 'webhook'
+  name      String
+  enabled   Boolean  @default(true)
+  config    String   @default("{}") // JSON string: 通知配置
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

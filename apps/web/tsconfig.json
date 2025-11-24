@@ -1,0 +1,21 @@
+{
+  "extends": "@auto-fetch/typescript-config/react-library.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "types": ["vite/client"],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
