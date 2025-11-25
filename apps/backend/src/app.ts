@@ -13,6 +13,9 @@ import authRoutes from './routes/auth.js';
 import platformRoutes from './routes/platforms.js';
 import accountRoutes from './routes/accounts.js';
 
+// 设置开发环境标志
+__DEV__ = process.env.NODE_ENV !== 'production';
+
 const app: Express = express();
 
 // 中间件

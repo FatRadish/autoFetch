@@ -48,9 +48,9 @@ export function decrypt(encryptedText: string, secretKey: string): string {
     throw new Error('Invalid encrypted data format');
   }
 
-  const salt = Buffer.from(parts[0], 'hex');
-  const iv = Buffer.from(parts[1], 'hex');
-  const tag = Buffer.from(parts[2], 'hex');
+  const salt = Buffer.from(parts[0]!, 'hex');
+  const iv = Buffer.from(parts[1]!, 'hex');
+  const tag = Buffer.from(parts[2]!, 'hex');
   const encrypted = parts[3];
 
   const key = deriveKey(secretKey, salt);
@@ -58,7 +58,9 @@ export function decrypt(encryptedText: string, secretKey: string): string {
   const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
   decipher.setAuthTag(tag);
 
+  //@ts-ignore
   let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  //@ts-ignore
   decrypted += decipher.final('utf8');
 
   return decrypted;

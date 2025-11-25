@@ -42,8 +42,8 @@ export function parseCookies(cookieString: string): ParsedCookie[] {
       if (parts.length >= 7) {
         // Netscape cookie file format
         cookies.push({
-          name: parts[5],
-          value: parts[6],
+          name: parts[5]!,
+          value: parts[6]!,
           domain: parts[0],
           path: parts[2],
           secure: parts[3] === 'TRUE',
@@ -53,7 +53,7 @@ export function parseCookies(cookieString: string): ParsedCookie[] {
         // Simple name=value format
         const [name, ...valueParts] = trimmed.split('=');
         cookies.push({
-          name: name.trim(),
+          name: name!.trim(),
           value: valueParts.join('=').trim(),
         });
       }

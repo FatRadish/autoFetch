@@ -2,11 +2,10 @@
   "extends": "@auto-fetch/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "module": "ESNext",
     "target": "ES2023",
-    "ignoreDeprecations":"6.0",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -21,6 +20,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "*.d.ts"],
   "exclude": ["node_modules", "dist", "tests"]
 }

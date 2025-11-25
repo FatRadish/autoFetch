@@ -1,5 +1,14 @@
 import type { BasePlatformAdapter } from './base.js';
 import { JDAdapter } from './platforms/jd.js';
+import { BilibiliAdapter } from './platforms/bilibili.js';
+
+/**
+ * 适配器名称到类型的映射
+ */
+type AdapterMap = {
+  jd: JDAdapter;
+  bilibili: BilibiliAdapter;
+};
 
 /**
  * 平台适配器注册表
@@ -8,15 +17,20 @@ class AdapterRegistry {
   private adapters: Map<string, new () => BasePlatformAdapter> = new Map();
 
   /**
-   * 注册适配器
+   * 注册适配器（泛型版本）
    */
-  register(name: string, AdapterClass: new () => BasePlatformAdapter): void {
+  register<T extends BasePlatformAdapter>(
+    name: string,
+    AdapterClass: new () => T
+  ): void {
     this.adapters.set(name.toLowerCase(), AdapterClass);
   }
 
   /**
-   * 获取适配器实例
+   * 获取适配器实例（类型安全的重载版本）
    */
+  get<K extends keyof AdapterMap>(name: K): AdapterMap[K] | null;
+  get(name: string): BasePlatformAdapter | null;
   get(name: string): BasePlatformAdapter | null {
     const AdapterClass = this.adapters.get(name.toLowerCase());
     if (!AdapterClass) {
@@ -46,11 +60,7 @@ export const adapterRegistry = new AdapterRegistry();
 // 注册所有内置适配器
 export function registerBuiltinAdapters(): void {
   adapterRegistry.register('jd', JDAdapter);
-  adapterRegistry.register('京东', JDAdapter); // 支持中文名称
-
-  // 可以在这里注册更多适配器
-  // adapterRegistry.register('taobao', TaobaoAdapter);
-  // adapterRegistry.register('baidupan', BaiduPanAdapter);
+  adapterRegistry.register('bilibili', BilibiliAdapter);
 }
 
 // 自动注册内置适配器

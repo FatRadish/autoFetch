@@ -12,7 +12,7 @@ export function validate<T>(schema: z.ZodSchema<T>, data: unknown): T {
     return schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const messages = error.errors.map((err) => `${err.path.join('.')}: ${err.message}`);
+      const messages = error.errors.map((err:any) => `${err.path.join('.')}: ${err.message}`);
       throw new ValidationError(messages.join('; '));
     }
     throw error;

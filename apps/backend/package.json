@@ -12,6 +12,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio --config ./prisma.config.ts",
     "prisma:deploy": "prisma migrate deploy",
+    "browser:install": "playwright install chromium",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "lint": "eslint src --ext .ts",
@@ -38,6 +39,7 @@
     "express-rate-limit": "^8.2.1",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
+    "playwright": "^1.56.1",
     "winston": "^3.17.0",
     "zod": "^4.1.12"
   },

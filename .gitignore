@@ -38,3 +38,10 @@ yarn-error.log*
 *.pem
 
 claude.md
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
