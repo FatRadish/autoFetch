@@ -12,7 +12,7 @@ export function validate<T>(schema: z.ZodSchema<T>, data: unknown): T {
     return schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const messages = error.errors.map((err:any) => `${err.path.join('.')}: ${err.message}`);
+      const messages = error.issues.map((err: any) => `${err.path.join('.')}: ${err.message}`);
       throw new ValidationError(messages.join('; '));
     }
     throw error;
@@ -30,7 +30,7 @@ export function safeValidate<T>(
   if (result.success) {
     return { success: true, data: result.data };
   } else {
-    const messages = result.error.errors.map((err) => `${err.path.join('.')}: ${err.message}`);
+    const messages = result.error.issues.map((err) => `${err.path.join('.')}: ${err.message}`);
     return { success: false, error: messages.join('; ') };
   }
 }
@@ -56,7 +56,7 @@ export const schemas = {
     icon: z.string().optional(),
     description: z.string().optional(),
     adapterType: z.enum(['http', 'browser']),
-    config: z.record(z.unknown()).default({}),
+    config: z.record(z.string(), z.unknown()).default({}),
   }),
 
   updatePlatform: z.object({
@@ -65,7 +65,7 @@ export const schemas = {
     description: z.string().optional(),
     enabled: z.boolean().optional(),
     adapterType: z.enum(['http', 'browser']).optional(),
-    config: z.record(z.unknown()).optional(),
+    config: z.record(z.string(), z.unknown()).optional(),
   }),
 
   // 账号相关
@@ -74,7 +74,7 @@ export const schemas = {
     name: z.string().min(1, 'Account name is required'),
     cookies: z.string().min(1, 'Cookies are required'),
     userAgent: z.string().min(1, 'User agent is required'),
-    headers: z.record(z.string()).optional(),
+    headers: z.record(z.string(), z.string()).optional(),
     proxy: z
       .object({
         enabled: z.boolean(),
@@ -90,7 +90,7 @@ export const schemas = {
     name: z.string().min(1).optional(),
     cookies: z.string().min(1).optional(),
     userAgent: z.string().min(1).optional(),
-    headers: z.record(z.string()).optional(),
+    headers: z.record(z.string(), z.string()).optional(),
     proxy: z
       .object({
         enabled: z.boolean(),
@@ -110,7 +110,7 @@ export const schemas = {
     schedule: z.string().min(1, 'Schedule is required'),
     retryTimes: z.number().min(0).max(10).default(3),
     timeout: z.number().min(1000).max(300000).default(30000),
-    config: z.record(z.unknown()).optional(),
+    config: z.record(z.string(), z.unknown()).optional(),
   }),
 
   updateTask: z.object({
@@ -119,7 +119,7 @@ export const schemas = {
     enabled: z.boolean().optional(),
     retryTimes: z.number().min(0).max(10).optional(),
     timeout: z.number().min(1000).max(300000).optional(),
-    config: z.record(z.unknown()).optional(),
+    config: z.record(z.string(), z.unknown()).optional(),
   }),
 
   // 分页查询
