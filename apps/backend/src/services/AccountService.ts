@@ -3,7 +3,7 @@ import { NotFoundError, ValidationError } from '../types/index.js';
 import { encrypt, decrypt } from '../utils/encrypt.js';
 import { validateCookies } from '../utils/cookie.js';
 import config from '../config/index.js';
-
+import { type JwtPayload } from '../types/index.js';
 export class AccountService {
   /**
    * 获取所有账号
@@ -77,6 +77,7 @@ export class AccountService {
     userAgent: string;
     headers?: Record<string, string>;
     proxy?: { enabled: boolean; host?: string; port?: number; username?: string; password?: string };
+    user?: JwtPayload
   }) {
     // 验证平台是否存在
     const platform = await prisma.platform.findUnique({
@@ -99,6 +100,7 @@ export class AccountService {
     const account = await prisma.account.create({
       data: {
         platformId: data.platformId,
+        userId:data.user!.userId,
         name: data.name,
         cookies: encryptedCookies,
         userAgent: data.userAgent,

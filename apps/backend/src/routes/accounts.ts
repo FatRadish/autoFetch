@@ -54,7 +54,7 @@ router.post(
   asyncHandler(async (req, res) => {
     const data = validate(schemas.createAccount, req.body);
 
-    const account = await AccountService.create(data);
+    const account = await AccountService.create({...data,user:req.user});
 
     res.status(201).json({
       success: true,

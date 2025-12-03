@@ -7,22 +7,6 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Backend (tsx)",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "program": "${workspaceFolder}/apps/backend/src/app.ts",
-      "cwd": "${workspaceFolder}/apps/backend",
-      "runtimeExecutable": "${workspaceFolder}/apps/backend/node_modules/.bin/tsx",
-      "runtimeArgs": [],
-      "console": "integratedTerminal",
-      "env": {
-        "NODE_ENV": "development"
-      }
-    },
-    {
-      "type": "node",
-      "request": "launch",
       "name": "Debug Current TS File",
       "skipFiles": [
         "<node_internals>/**"
@@ -43,6 +27,29 @@
       "port": 9229,
       "skipFiles": [
         "<node_internals>/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "调试Express",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/apps/backend/src/app.ts",
+      "cwd": "${workspaceFolder}/apps/backend",
+      "runtimeExecutable": "${workspaceFolder}/apps/backend/node_modules/.bin/tsx",
+      "runtimeArgs": [],
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "development",
+        "TS_NODE_PROJECT": "${workspaceFolder}/apps/backend/tsconfig.json",
+        "TS_NODE_TRANSPILE_ONLY": "true"
+      },
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/apps/backend/**",
+        "!**/node_modules/**",
+        "!**/dist/**"
       ]
     }
   ]

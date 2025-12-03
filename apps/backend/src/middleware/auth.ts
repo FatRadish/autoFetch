@@ -97,6 +97,7 @@ export function generateToken(payload: Omit<JwtPayload, 'iat' | 'exp'>): string 
 
   const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
 
+  //@ts-ignore
   return jwt.sign(payload, secret, { expiresIn });
 }
 
