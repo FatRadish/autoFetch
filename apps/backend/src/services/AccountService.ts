@@ -8,9 +8,13 @@ export class AccountService {
   /**
    * 获取所有账号
    */
-  static async getAll(platformId?: string) {
+  static async getAll(data:{
+    platformId?:string,
+    user:JwtPayload
+  }) {
+    const { platformId,user } = data
     const accounts = await prisma.account.findMany({
-      where: platformId ? { platformId } : undefined,
+      where: platformId ? { platformId,userId:user.userId } : {userId:user.userId},
       include: {
         platform: {
           select: {
@@ -39,9 +43,9 @@ export class AccountService {
   /**
    * 根据 ID 获取账号
    */
-  static async getById(id: string, includeCookies = false) {
+  static async getById(id: string, user: JwtPayload ,includeCookies = false) {
     const account = await prisma.account.findUnique({
-      where: { id },
+      where: { id ,userId:user.userId},
       include: {
         platform: true,
         _count: {
@@ -79,6 +83,13 @@ export class AccountService {
     proxy?: { enabled: boolean; host?: string; port?: number; username?: string; password?: string };
     user?: JwtPayload
   }) {
+    const existingAccount = await prisma.account.findUnique({
+      where: { name: data.name }
+    })
+
+    if(existingAccount){
+      throw new ValidationError('Account name already exists');
+    }
     // 验证平台是否存在
     const platform = await prisma.platform.findUnique({
       where: { id: data.platformId },

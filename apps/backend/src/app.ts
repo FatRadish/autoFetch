@@ -13,6 +13,7 @@ import seed from '../prisma/seed.js'
 import authRoutes from './routes/auth.js';
 import platformRoutes from './routes/platforms.js';
 import accountRoutes from './routes/accounts.js';
+import taskRoutes from './routes/task.js'
 
 // 设置开发环境标志
 // const __DEV__ = process.env.NODE_ENV !== 'production';
@@ -65,6 +66,7 @@ app.get('/api', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/platforms', platformRoutes);
 app.use('/api/accounts', accountRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // 404 处理
 app.use(notFoundHandler);

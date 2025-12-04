@@ -41,8 +41,20 @@ export default async function seed() {
         update: {},
         create: platformData,
       });
+      // 在 platformTask 表插入初始数据，并与平台关联
+      const platformTask = await prisma.platformTask.upsert({
+        where: { key: 'bilibili_vip_privilege' },
+        update: {},
+        create: {
+          platformId: platform.id, // 关联平台
+          name: 'B站大会员权益领取',
+          key: 'bilibili_vip_privilege',
+        },
+      });
       logger.info(`Created platform:${platform.name}`)
+      logger.info(`Created platformTask:${platformTask.name}`)
     }
+    //平台任务
     logger.info(`Database seeding completed!`)
   } catch (error) {
     logger.error(`seed is error${error}`)

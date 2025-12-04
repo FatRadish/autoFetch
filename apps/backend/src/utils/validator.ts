@@ -35,6 +35,28 @@ export function safeValidate<T>(
   }
 }
 
+/**
+ * 简单的 cron 表达式校验器，支持常见的 5 或 6 字段表达式（空格分隔）
+ * - 5 字段: minute hour day month weekday
+ * - 6 字段: second minute hour day month weekday
+ * 此校验器使用宽松的字段模式，允许 '*', 数字, 范围, 步进和逗号列表。
+ */
+function isValidCron(expr: unknown): boolean {
+  if (typeof expr !== 'string') return false;
+  const s = expr.trim();
+  if (!s) return false;
+  const parts = s.split(/\s+/);
+  if (!(parts.length === 5 || parts.length === 6)) return false;
+
+  // 每一段允许: '*' 或 数字 或 数字-数字 (range)，可选 /step，段之间可用逗号分隔的多个子段
+  const fieldRegex = /^(\*|\d+|\d+-\d+)(\/\d+)?(,(\*|\d+|\d+-\d+)(\/\d+)?)*$/;
+
+  // 允许一些额外的符号组合（例如在某些实现中支持的 L,W,#,?）
+  const extraRegex = /^[\*\d,\-\/\?LW#]+$/i;
+
+  return parts.every((p) => fieldRegex.test(p) || extraRegex.test(p));
+}
+
 // 常用验证 schemas
 export const schemas = {
   // 用户相关
@@ -107,15 +129,20 @@ export const schemas = {
   createTask: z.object({
     accountId: z.string().cuid(),
     name: z.string().min(1, 'Task name is required'),
-    schedule: z.string().min(1, 'Schedule is required'),
+    schedule: z.string().min(1, 'Schedule is required').refine((val) => isValidCron(val), {
+      message: 'Invalid cron expression',
+    }),
     retryTimes: z.number().min(0).max(10).default(3),
     timeout: z.number().min(1000).max(300000).default(30000),
     config: z.record(z.string(), z.unknown()).optional(),
+    platformTaskId: z.string().cuid().optional(),
   }),
 
   updateTask: z.object({
     name: z.string().min(1).optional(),
-    schedule: z.string().min(1).optional(),
+    schedule: z.string().min(1).optional().refine((val) => val === undefined || isValidCron(val), {
+      message: 'Invalid cron expression',
+    }),
     enabled: z.boolean().optional(),
     retryTimes: z.number().min(0).max(10).optional(),
     timeout: z.number().min(1000).max(300000).optional(),
