@@ -23,7 +23,7 @@ export default async function seed() {
     // 创建示例平台
     const platforms = [
       {
-        name: 'B站',
+        name: 'bilibili',
         icon: 'bilibili',
         description: 'B站签到领取B币、大会员权益',
         adapterType: 'browser',

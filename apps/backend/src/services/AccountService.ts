@@ -37,6 +37,8 @@ export class AccountService {
       headers: account.headers ? JSON.parse(account.headers) : {},
       proxy: account.proxy ? JSON.parse(account.proxy) : null,
       taskCount: account._count.tasks,
+      refreshToken: account.refreshToken ? '***' : null,
+      lastRefreshTime: account.lastRefreshTime,
     }));
   }
 
@@ -63,6 +65,8 @@ export class AccountService {
       cookies: includeCookies ? decrypt(account.cookies, config.encryption.secret) : '***',
       headers: account.headers ? JSON.parse(account.headers) : {},
       proxy: account.proxy ? JSON.parse(account.proxy) : null,
+      refreshToken: includeCookies ? account.refreshToken : account.refreshToken ? '***' : null,
+      lastRefreshTime: account.lastRefreshTime,
       platform: {
         ...account.platform,
         config: JSON.parse(account.platform.config),
@@ -81,6 +85,7 @@ export class AccountService {
     userAgent: string;
     headers?: Record<string, string>;
     proxy?: { enabled: boolean; host?: string; port?: number; username?: string; password?: string };
+    refreshToken?: string;
     user?: JwtPayload
   }) {
     const existingAccount = await prisma.account.findUnique({
@@ -117,6 +122,7 @@ export class AccountService {
         userAgent: data.userAgent,
         headers: data.headers ? JSON.stringify(data.headers) : '{}',
         proxy: data.proxy ? JSON.stringify(data.proxy) : '{}',
+        refreshToken: data.refreshToken,
       },
       include: {
         platform: {
@@ -134,6 +140,8 @@ export class AccountService {
       cookies: '***',
       headers: account.headers ? JSON.parse(account.headers) : {},
       proxy: account.proxy ? JSON.parse(account.proxy) : null,
+      refreshToken: account.refreshToken ? '***' : null,
+      lastRefreshTime: account.lastRefreshTime,
     };
   }
 
@@ -149,6 +157,8 @@ export class AccountService {
       headers?: Record<string, string>;
       proxy?: { enabled: boolean; host?: string; port?: number; username?: string; password?: string };
       enabled?: boolean;
+      refreshToken?: string | null;
+      lastRefreshTime?: Date | null;
     }
   ) {
     const account = await prisma.account.findUnique({ where: { id } });
@@ -176,6 +186,8 @@ export class AccountService {
         ...(data.headers && { headers: JSON.stringify(data.headers) }),
         ...(data.proxy !== undefined && { proxy: JSON.stringify(data.proxy) }),
         ...(data.enabled !== undefined && { enabled: data.enabled }),
+        ...(data.refreshToken !== undefined && { refreshToken: data.refreshToken || null }),
+        ...(data.lastRefreshTime !== undefined && { lastRefreshTime: data.lastRefreshTime }),
       },
       include: {
         platform: {
@@ -193,6 +205,8 @@ export class AccountService {
       cookies: '***',
       headers: updated.headers ? JSON.parse(updated.headers) : {},
       proxy: updated.proxy ? JSON.parse(updated.proxy) : null,
+      refreshToken: updated.refreshToken ? '***' : null,
+      lastRefreshTime: updated.lastRefreshTime,
     };
   }
 

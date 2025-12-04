@@ -51,6 +51,8 @@ class TaskRunner {
           userAgent: task.account.userAgent,
           headers: JSON.parse(task.account.headers || '{}'),
           proxy: JSON.parse(task.account.proxy || '{}'),
+          refreshToken: task.account.refreshToken,
+          lastRefreshTime: task.account.lastRefreshTime,
         },
         task: {
           id: task.id,

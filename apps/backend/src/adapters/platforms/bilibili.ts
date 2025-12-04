@@ -1,6 +1,7 @@
 import { BrowserAdapter } from '../browser.js';
 import type { ExecutionContext, ExecutionResult } from '../../types/index.js';
 import { Page } from 'playwright';
+import { AccountRefreshService } from '../../services/AccountRefreshService.js';
 
 /**
  * B站平台适配器
@@ -15,6 +16,28 @@ export class BilibiliAdapter extends BrowserAdapter {
       this.validateContext(context);
 
       this.log('info', 'Starting Bilibili check-in');
+
+      // 尝试刷新 Cookie（如果可能）
+      if (context.account.refreshToken) {
+        try {
+          const refreshResult = await AccountRefreshService.refreshAccountCookie(context.account.id, {
+            logger: (level, message, ...meta) =>
+              this.log(level, message, meta.length ? meta : undefined),
+          });
+
+          if (refreshResult.success && refreshResult.refreshed && refreshResult.updatedCookies) {
+            context.account.cookies = refreshResult.updatedCookies;
+            context.account.refreshToken = refreshResult.updatedRefreshToken;
+            this.log('info', 'Cookies refreshed before task execution');
+          } else if (!refreshResult.success) {
+            this.log('warn', `Cookie refresh skipped: ${refreshResult.message}`);
+          }
+        } catch (error) {
+          this.log('warn', 'Cookie refresh attempt failed, proceeding with existing cookies', error);
+        }
+      } else {
+        this.log('warn', 'No refresh token provided; automatic cookie refresh skipped');
+      }
 
       // 初始化浏览器（使用非 headless 模式避免反爬虫检测）
       this.page = await this.initBrowser(context, {
@@ -32,7 +55,7 @@ export class BilibiliAdapter extends BrowserAdapter {
 
       // 访问 B站首页
       this.log('info', 'Navigating to Bilibili homepage');
-      await this.page.goto(checkInUrl, { waitUntil: 'networkidle' });
+      await this.page.goto(checkInUrl);
 
       // 检查是否已登录
       const isLoggedIn = await this.checkLoginStatus(this.page);
@@ -67,7 +90,7 @@ export class BilibiliAdapter extends BrowserAdapter {
   async checkLoginStatus(page: any): Promise<boolean> {
     try {
       // 等待页面网络空闲（所有资源加载完成）
-      await page.waitForLoadState('networkidle');
+      // await page.waitForLoadState('networkidle');
 
       // 验证 Cookies 是否已加载到页面
       const pageCookies = await page.context().cookies();

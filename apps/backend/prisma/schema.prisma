@@ -52,6 +52,8 @@ model Account {
   userAgent  String
   headers    String?  @default("{}") // JSON string: 自定义 Headers
   proxy      String?  @default("{}") // JSON string: 代理配置
+  refreshToken String? // 平台提供的 refresh_token，用于 Cookie 自动刷新
+  lastRefreshTime DateTime? // 最近一次刷新 Cookie 的时间
   enabled    Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

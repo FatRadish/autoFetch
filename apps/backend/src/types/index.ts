@@ -7,6 +7,8 @@ export interface ExecutionContext {
     userAgent: string;
     headers: Record<string, string>;
     proxy?: ProxyConfig;
+    refreshToken?: string | null;
+    lastRefreshTime?: Date | null;
   };
   task: {
     id: string;

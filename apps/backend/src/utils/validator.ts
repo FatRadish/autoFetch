@@ -106,6 +106,7 @@ export const schemas = {
         password: z.string().optional(),
       })
       .optional(),
+    refreshToken: z.string().min(1).optional(),
   }),
 
   updateAccount: z.object({
@@ -123,6 +124,8 @@ export const schemas = {
       })
       .optional(),
     enabled: z.boolean().optional(),
+    refreshToken: z.string().min(1).nullable().optional(),
+    lastRefreshTime: z.coerce.date().nullable().optional(),
   }),
 
   // 任务相关
