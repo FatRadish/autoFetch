@@ -8,6 +8,7 @@ import logger from './utils/logger.js';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
 import { apiLimiter } from './middleware/ratelimit.js';
 import seed from '../prisma/seed.js'
+import { scheduler } from './scheduler/index.js';
 
 // 导入路由
 import authRoutes from './routes/auth.js';
@@ -75,15 +76,18 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // 启动服务器
-const server = app.listen(config.server.port, config.server.host, () => {
+const server = app.listen(config.server.port, config.server.host, async () => {
   logger.info(`Server is running on http://${config.server.host}:${config.server.port}`);
   logger.info(`Environment: ${config.server.env}`);
-  seed()
+  
+  await seed();
+  await scheduler.init();
 });
 
 // 优雅关闭
 process.on('SIGTERM', () => {
   logger.info('SIGTERM signal received: closing HTTP server');
+  scheduler.stop();
   server.close(() => {
     logger.info('HTTP server closed');
     process.exit(0);
@@ -92,6 +96,7 @@ process.on('SIGTERM', () => {
 
 process.on('SIGINT', () => {
   logger.info('SIGINT signal received: closing HTTP server');
+  scheduler.stop();
   server.close(() => {
     logger.info('HTTP server closed');
     process.exit(0);

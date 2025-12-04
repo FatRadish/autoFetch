@@ -1,5 +1,6 @@
 import prisma from '../lib/prisma.js';
 import { NotFoundError, ValidationError } from '../types/index.js';
+import { scheduler } from '../scheduler/index.js';
 
 export class TaskService {
   /**
@@ -116,6 +117,9 @@ export class TaskService {
       }
     })
 
+    // 同步到调度器
+    scheduler.schedule(task.id, task.schedule);
+
     return task
   }
 
@@ -159,6 +163,9 @@ export class TaskService {
       },
     });
 
+    // 同步到调度器（启用状态或 schedule 变化时重新调度）
+    await scheduler.reschedule(updated.id);
+
     return updated;
   }
 
@@ -171,6 +178,9 @@ export class TaskService {
     if (!task) {
       throw new NotFoundError('Task not found');
     }
+
+    // 取消调度
+    scheduler.cancel(id);
 
     await prisma.task.delete({ where: { id } });
   }

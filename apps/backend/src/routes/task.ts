@@ -4,6 +4,7 @@ import { asyncHandler } from '../middleware/error.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { createLimiter } from '../middleware/ratelimit.js';
 import { validate, schemas } from '../utils/validator.js';
+import { scheduler } from '../scheduler/index.js';
 
 const router: RouterType = Router();
 
@@ -94,6 +95,41 @@ router.delete(
       success:true,
       message:'任务删除成功'
     })
+  })
+);
+
+/**
+ * POST /api/tasks/:id/run
+ * 手动触发任务执行
+ */
+router.post(
+  '/:id/run',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
+    const result = await scheduler.trigger(req.params.id!);
+
+    res.json({
+      success: result.success,
+      data: result,
+      message: result.message,
+    });
+  })
+);
+
+/**
+ * GET /api/tasks/scheduler/status
+ * 获取调度器状态
+ */
+router.get(
+  '/scheduler/status',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
+    const status = scheduler.getStatus();
+
+    res.json({
+      success: true,
+      data: status,
+    });
   })
 );
 

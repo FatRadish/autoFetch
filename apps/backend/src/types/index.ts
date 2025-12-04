@@ -21,6 +21,11 @@ export interface ExecutionContext {
     adapterType: 'http' | 'browser';
     config: Record<string, unknown>;
   };
+  platformTask?: {
+    id?: string;
+    name?: string;
+    key?: string;
+  };
 }
 
 export interface ExecutionResult {

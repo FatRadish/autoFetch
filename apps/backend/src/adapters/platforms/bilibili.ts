@@ -19,15 +19,16 @@ export class BilibiliAdapter extends BrowserAdapter {
       // 初始化浏览器（使用非 headless 模式避免反爬虫检测）
       this.page = await this.initBrowser(context, {
         headless: false,
-        baseUrl: context.task.config.checkInUrl as string,
+        baseUrl: 'https://www.bilibili.com',
       });
 
       // 获取配置
-      const checkInUrl = this.getConfig<string>(
-        context,
-        'checkInUrl',
-        'https://www.bilibili.com'
-      );
+      // const checkInUrl = this.getConfig<string>(
+      //   context,
+      //   'checkInUrl',
+      //   'https://www.bilibili.com'
+      // );
+      const checkInUrl = 'https://www.bilibili.com';
 
       // 访问 B站首页
       this.log('info', 'Navigating to Bilibili homepage');
@@ -130,14 +131,12 @@ export class BilibiliAdapter extends BrowserAdapter {
 
         // 方法4: 检查是否有任何用户相关元素
         const headerUserFace = document.querySelector('.header-user-face');
-        const userInfoEl = document.querySelector('.user-con');
 
         return {
           hasUserAvatar: !!userAvatar,
           hasLoginButton: !!loginButton,
           hasUserData: !!userData && userData.isLogin,
           hasHeaderUserFace: !!headerUserFace,
-          hasUserInfoEl: !!userInfoEl,
           debug: {
             userAvatarClass: userAvatar?.className,
             loginButtonText: loginButton?.textContent,
@@ -155,8 +154,7 @@ export class BilibiliAdapter extends BrowserAdapter {
       return (
         loginStatus.hasUserAvatar ||
         loginStatus.hasUserData ||
-        loginStatus.hasHeaderUserFace ||
-        loginStatus.hasUserInfoEl
+        loginStatus.hasHeaderUserFace
       );
     } catch (error) {
       this.log('warn', 'Failed to check login status', error);
