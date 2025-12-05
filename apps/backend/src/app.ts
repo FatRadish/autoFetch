@@ -9,6 +9,7 @@ import { errorHandler, notFoundHandler } from './middleware/error.js';
 import { apiLimiter } from './middleware/ratelimit.js';
 import seed from '../prisma/seed.js'
 import { scheduler } from './scheduler/index.js';
+import { jsonDateReplacer } from './utils/date.js';
 
 // 导入路由
 import authRoutes from './routes/auth.js';
@@ -25,6 +26,9 @@ try{
 }
 
 const app: Express = express();
+
+// 设置 JSON 日期格式化
+app.set('json replacer', jsonDateReplacer);
 
 // 中间件
 app.use(helmet()); // 安全头
