@@ -38,5 +38,6 @@ export default defineConfig({
     setupFiles: ['./src/__tests__/integration.setup.ts'],
     // 隔离每个测试，确保数据库不共享
     isolate: true,
+    fileParallelism: false,
   },
 });
