@@ -31,6 +31,7 @@ export default defineConfig({
     env: {
       DATABASE_URL: `file:${TEST_DB_PATH}`,
       NODE_ENV: 'test',
+      JWT_SECRET: 'test-secret',
     },
     // 使用 globalSetup 在所有测试之前创建数据库
     globalSetup: ['./src/__tests__/integration.globalSetup.ts'],
