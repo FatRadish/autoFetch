@@ -3,7 +3,10 @@
   "extends": "./base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "allowImportingTsExtensions":true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "noEmit": true
   }
 }
