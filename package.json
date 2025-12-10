@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "turbo run dev",
-    "build": "turbo run build"
+    "build": "turbo run build",
+    "format": "oxc format --write .",
+    "format:check": "oxc format ."
   },
   "keywords": [],
   "author": "",
@@ -13,5 +15,8 @@
   "packageManager": "pnpm@10.22.0",
   "dependencies": {
     "turbo": "^2.6.1"
+  },
+  "devDependencies": {
+    "oxc": "^1.0.1"
   }
 }

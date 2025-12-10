@@ -275,7 +275,7 @@ describe('Auth Routes - Integration Tests', () => {
           password: 'password123',
         });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('Invalid username or password');
     });
@@ -301,7 +301,7 @@ describe('Auth Routes - Integration Tests', () => {
           password: 'wrongpassword',
         });
 
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('Invalid username or password');
     });

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxc-formatter/configuration_schema.json",
+  "formatter": {
+    "enabled": true,
+    "printWidth": 80,
+    "indentWidth": 2,
+    "useTabs": false,
+    "lineBreak": "lf",
+    "trailingComma": "es5",
+    "semicolons": "always",
+    "singleQuote": true,
+    "quoteProps": "asNeeded",
+    "jsxSingleQuote": false,
+    "arrowParens": "always",
+    "bracketSpacing": true,
+    "bracketSameLine": false
+  }
+}

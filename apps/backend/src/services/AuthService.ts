@@ -14,13 +14,13 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedError('Invalid username or password');
+      throw new ValidationError('账号或者密码错误');
     }
 
     // 验证密码
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-      throw new UnauthorizedError('Invalid username or password');
+      throw new ValidationError('账号或者密码错误');
     }
 
     // 生成 token

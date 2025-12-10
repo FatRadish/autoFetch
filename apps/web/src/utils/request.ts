@@ -1,15 +1,27 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ApiResponse } from './types.ts';
+import { useAuthStore } from '@/store/authStore'
 
+// `useTranslation().t` 在类型上通常接受更具体的 key 联合类型并可接收可选的插值参数。
+// 为了让它可被注入，我们将 `Translator` 定义为更通用的签名。
+type Translator = (key: any, interpolation?: Record<string, any>) => string;
 /**
  * Axios 封装类 - 专为 React Query 优化
  */
 class Request {
   private instance: AxiosInstance;
+  private translator?: Translator;
 
   constructor(config: AxiosRequestConfig) {
     this.instance = axios.create(config);
     this.setupInterceptors();
+  }
+
+  /**
+   * 在应用中注入翻译函数（例如在根组件中获得 `t` 后调用 `request.setTranslator(t)`）
+   */
+  setTranslator(fn: Translator) {
+    this.translator = fn;
   }
 
   /**
@@ -19,7 +31,7 @@ class Request {
     // 请求拦截器
     this.instance.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
-        const token = localStorage.getItem('token');
+        const { token } = useAuthStore.getState()
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -34,7 +46,7 @@ class Request {
         const { data } = response;
 
         // 业务逻辑成功，直接返回数据
-        if (data.code === 200 || data.code === 0) {
+        if (data.success) {
           return data.data;
         }
 
@@ -69,15 +81,18 @@ class Request {
    * 获取错误提示信息
    */
   private getErrorMessage(status: number): string {
+    const t = this.translator;
+
     const messages: Record<number, string> = {
-      400: '请求参数错误',
-      401: '未授权，请重新登录',
-      403: '拒绝访问',
-      404: '请求地址不存在',
-      500: '服务器内部错误',
-      502: '网关错误',
-      503: '服务不可用',
+      400: t ? t('error.networkError') : '请求错误',
+      401: t ? t('error.unauthorized') : '未授权',
+      403: t ? t('error.forbidden') : '禁止访问',
+      404: t ? t('error.notFound') : '未找到',
+      500: t ? t('error.serverError') : '服务器错误',
+      502: t ? t('error.networkError') : '网关错误',
+      503: t ? t('error.serverError') : '服务不可用',
     };
+
     return messages[status] || `请求失败: ${status}`;
   }
 
@@ -91,7 +106,7 @@ class Request {
   /**
    * POST 请求
    */
-  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>{
     return this.instance.post(url, data, config);
   }
 
@@ -112,7 +127,7 @@ class Request {
   /**
    * DELETE 请求
    */
-  delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+  delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>{
     return this.instance.delete(url, config);
   }
 

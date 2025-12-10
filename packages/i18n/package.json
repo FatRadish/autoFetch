@@ -1,0 +1,49 @@
+{
+  "name": "@auto-fetch/i18n",
+  "version": "0.1.0",
+  "description": "Internationalization package for AutoFetch",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js"
+    },
+    "./locales/*": "./src/locales/*"
+  },
+  "files": [
+    "dist",
+    "src/locales"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "i18next": "^25.6.2"
+  },
+  "devDependencies": {
+    "@auto-fetch/typescript-config": "workspace:*",
+    "@types/react": "^19.2.2",
+    "typescript": "~5.9.3"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-i18next": ">=14.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-i18next": {
+      "optional": true
+    }
+  }
+}

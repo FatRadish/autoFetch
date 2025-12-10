@@ -22,6 +22,7 @@ export function errorHandler(
     res.status(err.statusCode).json({
       success: false,
       error: err.message,
+      message: err.message
     });
     return;
   }
@@ -31,6 +32,7 @@ export function errorHandler(
     res.status(400).json({
       success: false,
       error: 'Database error occurred',
+      message: 'Database error occurred'
     });
     return;
   }
@@ -40,6 +42,7 @@ export function errorHandler(
     res.status(401).json({
       success: false,
       error: 'Invalid token',
+      message: 'Invalid token'
     });
     return;
   }
@@ -48,6 +51,7 @@ export function errorHandler(
     res.status(401).json({
       success: false,
       error: 'Token expired',
+      message: 'Token expired'
     });
     return;
   }
@@ -56,6 +60,7 @@ export function errorHandler(
   res.status(500).json({
     success: false,
     error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
+    message: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message
   });
 }
 
@@ -66,6 +71,7 @@ export function notFoundHandler(req: Request, res: Response): void {
   res.status(404).json({
     success: false,
     error: `Route ${req.method} ${req.path} not found`,
+    message: `Route ${req.method} ${req.path} not found`
   });
 }
 

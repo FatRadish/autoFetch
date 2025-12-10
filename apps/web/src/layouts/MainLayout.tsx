@@ -1,13 +1,16 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useAppStore } from '../store/index.ts'
 import { ModeToggle } from '@/components/mode-toggle.tsx'
+import { LanguageToggle } from '@/components/language-toggle.tsx'
+import { useTranslation } from '@/lib/i18n.ts'
 
 export default function MainLayout() {
   const location = useLocation()
   const { sidebarOpen, toggleSidebar } = useAppStore()
+  const { t } = useTranslation()
 
   const menuItems = [
-    { path: '/', label: '仪表盘', icon: '📊' },
+    { path: '/', label: t('task.taskList'), icon: '📊' },
   ]
 
   return (
@@ -25,6 +28,7 @@ export default function MainLayout() {
             <h1 className="text-xl font-bold text-blue-600">AutoFetch</h1>
           </div>
           <div className="flex items-center gap-4">
+            <LanguageToggle />
             <ModeToggle />
             <button className="btn p-2 hover:bg-gray-100 rounded">🔔</button>
             <button className="btn p-2 hover:bg-gray-100 rounded">👤</button>

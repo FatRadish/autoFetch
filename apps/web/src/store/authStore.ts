@@ -1,12 +1,8 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
+import { User } from '@/api/login'
 
 // 用户状态接口
-interface User {
-  id: string
-  name: string
-  email: string
-}
 
 interface AuthState {
   user: User | null
