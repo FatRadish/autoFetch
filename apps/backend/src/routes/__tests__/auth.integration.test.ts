@@ -277,7 +277,7 @@ describe('Auth Routes - Integration Tests', () => {
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Invalid username or password');
+      expect(response.body.error).toContain('账号或者密码错误');
     });
 
     /**
@@ -303,7 +303,7 @@ describe('Auth Routes - Integration Tests', () => {
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Invalid username or password');
+      expect(response.body.error).toContain('账号或者密码错误');
     });
 
     /**
