@@ -47,7 +47,7 @@ class TaskRunner {
         account: {
           id: task.account.id,
           name: task.account.name,
-          cookies: decrypt(task.account.cookies,config.encryption.secret),
+          cookies: decrypt(task.account.cookies, config.encryption.secret),
           userAgent: task.account.userAgent,
           headers: JSON.parse(task.account.headers || '{}'),
           proxy: JSON.parse(task.account.proxy || '{}'),
@@ -107,10 +107,13 @@ class TaskRunner {
         },
       });
 
-      logger.info(`[Scheduler] Task ${taskId} completed: ${result.success ? 'success' : 'failed'}`);
+      logger.info(
+        `[Scheduler] Task ${taskId} completed: ${result.success ? 'success' : 'failed'}`
+      );
       return result;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
 
       // 更新日志为失败状态
       await prisma.log.update({
@@ -155,12 +158,16 @@ class TaskRunner {
         lastError = new Error(result.message || 'Task failed');
       } catch (error) {
         lastError = error instanceof Error ? error : new Error('Unknown error');
-        logger.warn(`[Scheduler] Attempt ${attempt + 1} failed: ${lastError.message}`);
+        logger.warn(
+          `[Scheduler] Attempt ${attempt + 1} failed: ${lastError.message}`
+        );
       }
 
       // 等待后重试（指数退避）
       if (attempt < retries) {
-        await new Promise((resolve) => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000 * Math.pow(2, attempt))
+        );
       }
     }
 
@@ -214,7 +221,9 @@ class Scheduler {
       });
 
       this.jobs.set(taskId, job);
-      logger.info(`[Scheduler] Scheduled task ${taskId} with cron: ${cronExpr}`);
+      logger.info(
+        `[Scheduler] Scheduled task ${taskId} with cron: ${cronExpr}`
+      );
     } catch (error) {
       logger.error(`[Scheduler] Failed to schedule task ${taskId}:`, error);
     }

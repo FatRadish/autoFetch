@@ -1,6 +1,6 @@
 /**
  * 集成测试全局设置（在测试进程启动前运行）
- * 
+ *
  * 这个文件会在 vitest 主进程中运行，在测试文件加载之前执行
  * 用于创建测试数据库
  */
@@ -19,12 +19,12 @@ export async function setup() {
   // 设置环境变量
   process.env.DATABASE_URL = `file:${TEST_DB_PATH}`;
   process.env.NODE_ENV = 'test';
-  
+
   // 删除旧的测试数据库（如果存在）
   if (existsSync(TEST_DB_PATH)) {
     unlinkSync(TEST_DB_PATH);
   }
-  
+
   // 使用 db push 创建数据库表结构(不需要迁移历史)
   try {
     execSync('pnpm exec prisma db push --accept-data-loss', {

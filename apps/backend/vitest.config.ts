@@ -2,12 +2,12 @@ import { defineConfig } from 'vitest/config';
 
 /**
  * 单元测试配置
- * 
+ *
  * 【适用范围】
  * - 工具函数测试（utils/*.test.ts）
- * - 中间件测试（middleware/*.test.ts）  
+ * - 中间件测试（middleware/*.test.ts）
  * - 纯函数测试（不依赖数据库的函数）
- * 
+ *
  * 【特点】
  * - 使用 Mock，不连接真实数据库
  * - 测试速度快，适合 TDD 开发
@@ -28,8 +28,16 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      include: ['src/utils/**/*.ts', 'src/middleware/**/*.ts', 'src/lib/**/*.ts'],
-      exclude: ['src/**/*.test.ts', 'src/**/*.spec.ts', 'src/**/*.integration.test.ts'],
+      include: [
+        'src/utils/**/*.ts',
+        'src/middleware/**/*.ts',
+        'src/lib/**/*.ts',
+      ],
+      exclude: [
+        'src/**/*.test.ts',
+        'src/**/*.spec.ts',
+        'src/**/*.integration.test.ts',
+      ],
     },
     setupFiles: ['./src/__tests__/setup.ts'],
   },

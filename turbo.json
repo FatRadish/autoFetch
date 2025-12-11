@@ -11,10 +11,10 @@
       "cache": false,
       "persistent": true
     },
-    "lint":{
+    "lint": {
       "cache": true
     },
-    "studio":{
+    "studio": {
       "cache": true
     }
   }

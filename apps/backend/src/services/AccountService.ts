@@ -8,13 +8,12 @@ export class AccountService {
   /**
    * 获取所有账号
    */
-  static async getAll(data:{
-    platformId?:string,
-    user:JwtPayload
-  }) {
-    const { platformId,user } = data
+  static async getAll(data: { platformId?: string; user: JwtPayload }) {
+    const { platformId, user } = data;
     const accounts = await prisma.account.findMany({
-      where: platformId ? { platformId,userId:user.userId } : {userId:user.userId},
+      where: platformId
+        ? { platformId, userId: user.userId }
+        : { userId: user.userId },
       include: {
         platform: {
           select: {
@@ -31,7 +30,7 @@ export class AccountService {
     });
 
     // 解密 cookies 并解析 JSON 字段
-    return accounts.map((account: typeof accounts[number]) => ({
+    return accounts.map((account: (typeof accounts)[number]) => ({
       ...account,
       cookies: '***', // 不返回敏感信息
       headers: account.headers ? JSON.parse(account.headers) : {},
@@ -45,9 +44,9 @@ export class AccountService {
   /**
    * 根据 ID 获取账号
    */
-  static async getById(id: string, user: JwtPayload ,includeCookies = false) {
+  static async getById(id: string, user: JwtPayload, includeCookies = false) {
     const account = await prisma.account.findUnique({
-      where: { id ,userId:user.userId},
+      where: { id, userId: user.userId },
       include: {
         platform: true,
         _count: {
@@ -62,10 +61,16 @@ export class AccountService {
 
     return {
       ...account,
-      cookies: includeCookies ? decrypt(account.cookies, config.encryption.secret) : '***',
+      cookies: includeCookies
+        ? decrypt(account.cookies, config.encryption.secret)
+        : '***',
       headers: account.headers ? JSON.parse(account.headers) : {},
       proxy: account.proxy ? JSON.parse(account.proxy) : null,
-      refreshToken: includeCookies ? account.refreshToken : account.refreshToken ? '***' : null,
+      refreshToken: includeCookies
+        ? account.refreshToken
+        : account.refreshToken
+          ? '***'
+          : null,
       lastRefreshTime: account.lastRefreshTime,
       platform: {
         ...account.platform,
@@ -84,15 +89,21 @@ export class AccountService {
     cookies: string;
     userAgent: string;
     headers?: Record<string, string>;
-    proxy?: { enabled: boolean; host?: string; port?: number; username?: string; password?: string };
+    proxy?: {
+      enabled: boolean;
+      host?: string;
+      port?: number;
+      username?: string;
+      password?: string;
+    };
     refreshToken?: string;
-    user?: JwtPayload
+    user?: JwtPayload;
   }) {
     const existingAccount = await prisma.account.findUnique({
-      where: { name: data.name }
-    })
+      where: { name: data.name },
+    });
 
-    if(existingAccount){
+    if (existingAccount) {
       throw new ValidationError('Account name already exists');
     }
     // 验证平台是否存在
@@ -116,7 +127,7 @@ export class AccountService {
     const account = await prisma.account.create({
       data: {
         platformId: data.platformId,
-        userId:data.user!.userId,
+        userId: data.user!.userId,
         name: data.name,
         cookies: encryptedCookies,
         userAgent: data.userAgent,
@@ -155,7 +166,13 @@ export class AccountService {
       cookies?: string;
       userAgent?: string;
       headers?: Record<string, string>;
-      proxy?: { enabled: boolean; host?: string; port?: number; username?: string; password?: string };
+      proxy?: {
+        enabled: boolean;
+        host?: string;
+        port?: number;
+        username?: string;
+        password?: string;
+      };
       enabled?: boolean;
       refreshToken?: string | null;
       lastRefreshTime?: Date | null;
@@ -186,8 +203,12 @@ export class AccountService {
         ...(data.headers && { headers: JSON.stringify(data.headers) }),
         ...(data.proxy !== undefined && { proxy: JSON.stringify(data.proxy) }),
         ...(data.enabled !== undefined && { enabled: data.enabled }),
-        ...(data.refreshToken !== undefined && { refreshToken: data.refreshToken || null }),
-        ...(data.lastRefreshTime !== undefined && { lastRefreshTime: data.lastRefreshTime }),
+        ...(data.refreshToken !== undefined && {
+          refreshToken: data.refreshToken || null,
+        }),
+        ...(data.lastRefreshTime !== undefined && {
+          lastRefreshTime: data.lastRefreshTime,
+        }),
       },
       include: {
         platform: {
@@ -224,7 +245,9 @@ export class AccountService {
     }
 
     if (account._count.tasks > 0) {
-      throw new ValidationError('Cannot delete account with associated tasks. Delete tasks first.');
+      throw new ValidationError(
+        'Cannot delete account with associated tasks. Delete tasks first.'
+      );
     }
 
     await prisma.account.delete({ where: { id } });

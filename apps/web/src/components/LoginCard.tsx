@@ -20,12 +20,11 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useTranslation } from '@/lib/i18n.ts'
+import { useTranslation } from '@/lib/i18n.ts';
 import { useLogin } from '@/api/login';
 
-
 export function LoginCard() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   // 定义表单校验规则
   const loginSchema = z.object({
     username: z
@@ -60,7 +59,11 @@ export function LoginCard() {
     <Card className="w-full max-w-sm">
       <CardHeader>
         <div className="flex items-center justify-center space-x-2">
-          <img className="w-8 h-8" src="/public/autoFetch.svg" alt="AutoFetch Logo" />
+          <img
+            className="w-8 h-8"
+            src="/public/autoFetch.svg"
+            alt="AutoFetch Logo"
+          />
           <CardTitle>{t('auth.login')}</CardTitle>
         </div>
         {/* <CardAction>
@@ -77,7 +80,11 @@ export function LoginCard() {
                 <FormItem>
                   <FormLabel>{t('auth.username')}</FormLabel>
                   <FormControl>
-                    <Input placeholder={t('auth.username')} autoComplete="username" {...field} />
+                    <Input
+                      placeholder={t('auth.username')}
+                      autoComplete="username"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

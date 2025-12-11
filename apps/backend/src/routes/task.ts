@@ -16,7 +16,9 @@ router.get(
   '/:accountId',
   authMiddleware,
   asyncHandler(async (req, res) => {
-    const tasks = await TaskService.getAll({accountId: req.params.accountId!});
+    const tasks = await TaskService.getAll({
+      accountId: req.params.accountId!,
+    });
 
     res.json({
       success: true,
@@ -32,15 +34,15 @@ router.get(
 router.get(
   '/task/:id',
   authMiddleware,
-  asyncHandler(async (req,res)=>{
-    const task = await TaskService.getById(req.params.id!)
+  asyncHandler(async (req, res) => {
+    const task = await TaskService.getById(req.params.id!);
 
     res.json({
-      success:true,
-      data:task
-    })
+      success: true,
+      data: task,
+    });
   })
-)
+);
 
 /**
  * POST /api/tasks
@@ -50,17 +52,17 @@ router.post(
   '/',
   authMiddleware,
   createLimiter,
-  asyncHandler(async (req,res)=>{
-    const data = validate(schemas.createTask,req.body)
+  asyncHandler(async (req, res) => {
+    const data = validate(schemas.createTask, req.body);
 
-    const task = await TaskService.create(data)
+    const task = await TaskService.create(data);
 
     res.json({
-      success:true,
-      data:task
-    })
+      success: true,
+      data: task,
+    });
   })
-)
+);
 
 /**
  * PATCH /api/tasks/:id
@@ -69,17 +71,17 @@ router.post(
 router.patch(
   '/:id',
   authMiddleware,
-  asyncHandler(async (req,res)=>{
-    const data = validate(schemas.updateTask,req.body)
+  asyncHandler(async (req, res) => {
+    const data = validate(schemas.updateTask, req.body);
 
-    const task = await TaskService.update(req.params.id!,data)
+    const task = await TaskService.update(req.params.id!, data);
 
     res.json({
-      success:true,
-      data:task
-    })
+      success: true,
+      data: task,
+    });
   })
-)
+);
 
 /**
  * DELETE /api/tasks/:id
@@ -88,13 +90,13 @@ router.patch(
 router.delete(
   '/:id',
   authMiddleware,
-  asyncHandler(async (req,res)=>{
-    await TaskService.delete(req.params.id!)
+  asyncHandler(async (req, res) => {
+    await TaskService.delete(req.params.id!);
 
     res.json({
-      success:true,
-      message:'任务删除成功'
-    })
+      success: true,
+      message: '任务删除成功',
+    });
   })
 );
 

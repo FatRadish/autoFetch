@@ -15,7 +15,10 @@ export function parseCookies(cookieString: string): ParsedCookie[] {
   }
 
   // 尝试解析 JSON 格式
-  if (cookieString.trim().startsWith('[') || cookieString.trim().startsWith('{')) {
+  if (
+    cookieString.trim().startsWith('[') ||
+    cookieString.trim().startsWith('{')
+  ) {
     try {
       const parsed = JSON.parse(cookieString);
       if (Array.isArray(parsed)) {
@@ -102,7 +105,9 @@ export function cookiesFromObject(obj: Record<string, string>): ParsedCookie[] {
 /**
  * 将 Cookie 数组转换为对象
  */
-export function cookiesToObject(cookies: ParsedCookie[]): Record<string, string> {
+export function cookiesToObject(
+  cookies: ParsedCookie[]
+): Record<string, string> {
   const obj: Record<string, string> = {};
   for (const cookie of cookies) {
     obj[cookie.name] = cookie.value;
@@ -113,7 +118,9 @@ export function cookiesToObject(cookies: ParsedCookie[]): Record<string, string>
 /**
  * 合并多个 Cookie 数组（后面的覆盖前面的）
  */
-export function mergeCookies(...cookieArrays: ParsedCookie[][]): ParsedCookie[] {
+export function mergeCookies(
+  ...cookieArrays: ParsedCookie[][]
+): ParsedCookie[] {
   const cookieMap = new Map<string, ParsedCookie>();
 
   for (const cookies of cookieArrays) {
@@ -128,7 +135,10 @@ export function mergeCookies(...cookieArrays: ParsedCookie[][]): ParsedCookie[] 
 /**
  * 验证 Cookie 是否有效（基本格式检查）
  */
-export function validateCookies(cookieString: string): { valid: boolean; error?: string } {
+export function validateCookies(cookieString: string): {
+  valid: boolean;
+  error?: string;
+} {
   try {
     const cookies = parseCookies(cookieString);
     if (cookies.length === 0) {
@@ -138,7 +148,10 @@ export function validateCookies(cookieString: string): { valid: boolean; error?:
     // 检查每个 cookie 是否有 name 和 value
     for (const cookie of cookies) {
       if (!cookie.name || cookie.value === undefined) {
-        return { valid: false, error: 'Invalid cookie format: missing name or value' };
+        return {
+          valid: false,
+          error: 'Invalid cookie format: missing name or value',
+        };
       }
     }
 

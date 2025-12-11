@@ -44,42 +44,47 @@ interface UseLanguageReturn {
  */
 export async function initReactI18n(): Promise<void> {
   // 尝试从 localStorage 获取用户偏好语言
-  const savedLanguage = typeof window !== 'undefined'
-    ? (localStorage.getItem('i18n-language') as SupportedLanguage | null)
-    : null;
+  const savedLanguage =
+    typeof window !== 'undefined'
+      ? (localStorage.getItem('i18n-language') as SupportedLanguage | null)
+      : null;
 
   // 检测浏览器语言
-  const browserLanguage = typeof navigator !== 'undefined'
-    ? navigator.language
-    : DEFAULT_LANGUAGE;
+  const browserLanguage =
+    typeof navigator !== 'undefined' ? navigator.language : DEFAULT_LANGUAGE;
 
   // 确定初始语言
-  const initialLanguage = savedLanguage
-    || (SUPPORTED_LANGUAGES.includes(browserLanguage as SupportedLanguage)
-      ? browserLanguage as SupportedLanguage
+  const initialLanguage =
+    savedLanguage ||
+    (SUPPORTED_LANGUAGES.includes(browserLanguage as SupportedLanguage)
+      ? (browserLanguage as SupportedLanguage)
       : DEFAULT_LANGUAGE);
 
   // 使用 react-i18next 初始化
-  await i18next
-    .use(initReactI18next)
-    .init({
-      resources,
-      lng: initialLanguage,
-      fallbackLng: DEFAULT_LANGUAGE,
-      supportedLngs: SUPPORTED_LANGUAGES,
-      interpolation: {
-        escapeValue: false,
-      },
-      returnNull: false,
-      returnEmptyString: false,
-    });
+  await i18next.use(initReactI18next).init({
+    resources,
+    lng: initialLanguage,
+    fallbackLng: DEFAULT_LANGUAGE,
+    supportedLngs: SUPPORTED_LANGUAGES,
+    interpolation: {
+      escapeValue: false,
+    },
+    returnNull: false,
+    returnEmptyString: false,
+  });
 }
 
 /**
  * 类型安全的 useTranslation hook
  */
-export function useTranslation(options?: UseTranslationOptions<'translation'>): UseTranslationReturn {
-  const { t: originalT, i18n, ready } = useI18nextTranslation('translation', options);
+export function useTranslation(
+  options?: UseTranslationOptions<'translation'>
+): UseTranslationReturn {
+  const {
+    t: originalT,
+    i18n,
+    ready,
+  } = useI18nextTranslation('translation', options);
 
   // 包装 t 函数以提供更好的类型支持
   const t = useCallback(
@@ -120,17 +125,14 @@ export function useLanguage(): UseLanguageReturn {
     }
   }, [i18n]);
 
-  const changeLanguage = useCallback(
-    async (lng: SupportedLanguage) => {
-      await changeLanguageCore(lng);
-      setLanguageState(lng);
-      // 保存到 localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('i18n-language', lng);
-      }
-    },
-    []
-  );
+  const changeLanguage = useCallback(async (lng: SupportedLanguage) => {
+    await changeLanguageCore(lng);
+    setLanguageState(lng);
+    // 保存到 localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('i18n-language', lng);
+    }
+  }, []);
 
   return {
     language,

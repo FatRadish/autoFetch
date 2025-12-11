@@ -17,9 +17,9 @@
     "sourceMap": true,
     "types": ["node"],
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+    },
   },
-  "include": ["src/**/*","prisma/**/*", "*.d.ts"],
-  "exclude": ["node_modules", "dist", "tests"]
+  "include": ["src/**/*", "prisma/**/*", "*.d.ts"],
+  "exclude": ["node_modules", "dist", "tests"],
 }

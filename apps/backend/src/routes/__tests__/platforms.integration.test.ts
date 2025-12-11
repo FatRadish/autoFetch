@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  beforeEach,
+  afterEach,
+  afterAll,
+} from 'vitest';
 import express, { type Express } from 'express';
 import request from 'supertest';
 import platformsRouter from '../../routes/platforms';
@@ -21,7 +29,7 @@ describe('Platforms Routes - Integration Tests', () => {
   beforeEach(async () => {
     app = express();
     app.use(express.json());
-    
+
     app.use((req, res, next) => {
       req.user = {
         userId: 'test_user_id',
@@ -30,9 +38,9 @@ describe('Platforms Routes - Integration Tests', () => {
       };
       next();
     });
-    
+
     app.use('/api/platforms', platformsRouter);
-    
+
     app.use(notFoundHandler);
     app.use(errorHandler);
 
@@ -139,7 +147,9 @@ describe('Platforms Routes - Integration Tests', () => {
         ],
       });
 
-      const response = await request(app).get('/api/platforms?includeDisabled=true');
+      const response = await request(app).get(
+        '/api/platforms?includeDisabled=true'
+      );
 
       expect(response.status).toBe(200);
       expect(response.body.data).toHaveLength(2);

@@ -6,10 +6,8 @@ export class TaskService {
   /**
    * 获取所有任务
    */
-  static async getAll(data: {
-    accountId: string
-  }) {
-    const { accountId } = data
+  static async getAll(data: { accountId: string }) {
+    const { accountId } = data;
     const tasks = await prisma.task.findMany({
       where: { accountId },
       include: {
@@ -22,22 +20,22 @@ export class TaskService {
             proxy: true,
             userAgent: true,
             platformId: true,
-          }
+          },
         },
         platformTask: {
           select: {
             name: true,
-            key: true
-          }
+            key: true,
+          },
         },
         _count: {
-          select: { logs: true }
+          select: { logs: true },
         },
       },
-      orderBy: { createdAt: 'desc' }
-    })
-    
-    return tasks
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return tasks;
   }
 
   /**
@@ -56,49 +54,49 @@ export class TaskService {
             proxy: true,
             userAgent: true,
             platformId: true,
-          }
+          },
         },
-        platformTask:{
-          select:{
-            name:true,
-            key:true
-          }
+        platformTask: {
+          select: {
+            name: true,
+            key: true,
+          },
         },
         _count: {
-          select: { logs: true }
+          select: { logs: true },
         },
       },
-    })
+    });
 
     if (!task) {
       throw new NotFoundError('Task not found');
     }
 
-    return task
+    return task;
   }
 
   /**
    * 创建任务
    */
-  static async create(data:{
-    accountId:string,
-    name:string,
-    schedule:string,
-    config?:Record<string,unknown>,
-    retryTimes?:number,
-    timeout?:number,
-    platformTaskId?:string
-  }){
+  static async create(data: {
+    accountId: string;
+    name: string;
+    schedule: string;
+    config?: Record<string, unknown>;
+    retryTimes?: number;
+    timeout?: number;
+    platformTaskId?: string;
+  }) {
     const account = await prisma.account.findUnique({
-      where:{id: data.accountId}
-    })
+      where: { id: data.accountId },
+    });
 
-    if(!account){
+    if (!account) {
       throw new NotFoundError('没有找到对应的账号！');
     }
 
     const existingTask = await prisma.task.findUnique({
-      where: { name: data.name }
+      where: { name: data.name },
     });
 
     if (existingTask) {
@@ -106,40 +104,43 @@ export class TaskService {
     }
 
     const task = await prisma.task.create({
-      data:{
+      data: {
         accountId: data.accountId,
         name: data.name,
         schedule: data.schedule,
         config: data.config ? JSON.stringify(data.config) : undefined,
         retryTimes: data.retryTimes,
         timeout: data.timeout,
-        platformTaskId: data.platformTaskId
-      }
-    })
+        platformTaskId: data.platformTaskId,
+      },
+    });
 
     // 同步到调度器
     scheduler.schedule(task.id, task.schedule);
 
-    return task
+    return task;
   }
 
   /**
    * 更新任务
    */
-  static async update(taskId:string,data:{
-    name?:string,
-    schedule?:string,
-    enabled?:boolean,
-    retryTimes?:number,
-    timeout?:number,
-    config?:Record<string,unknown>
-  }) {
+  static async update(
+    taskId: string,
+    data: {
+      name?: string;
+      schedule?: string;
+      enabled?: boolean;
+      retryTimes?: number;
+      timeout?: number;
+      config?: Record<string, unknown>;
+    }
+  ) {
     const task = await prisma.task.findUnique({ where: { id: taskId } });
 
     if (!task) {
       throw new NotFoundError('Task not found');
     }
-    
+
     // 如果要更新名称，检查是否已存在
     if (data.name && data.name !== task.name) {
       const existing = await prisma.task.findUnique({
@@ -150,7 +151,7 @@ export class TaskService {
         throw new ValidationError('任务名称已存在！');
       }
     }
-    
+
     const updated = await prisma.task.update({
       where: { id: taskId },
       data: {

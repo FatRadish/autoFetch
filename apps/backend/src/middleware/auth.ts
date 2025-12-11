@@ -14,7 +14,11 @@ declare global {
 /**
  * JWT 认证中间件
  */
-export function authMiddleware(req: Request, res: Response, next: NextFunction): void {
+export function authMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
   // 在测试环境中，如果 req.user 已经被设置（由测试注入），则跳过 JWT 验证
   if (req.user) {
     return next();
@@ -55,7 +59,11 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
 /**
  * 可选认证中间件（不强制要求登录）
  */
-export function optionalAuthMiddleware(req: Request, res: Response, next: NextFunction): void {
+export function optionalAuthMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
   try {
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -94,7 +102,9 @@ export function requireRole(...roles: string[]) {
 /**
  * 生成 JWT token
  */
-export function generateToken(payload: Omit<JwtPayload, 'iat' | 'exp'>): string {
+export function generateToken(
+  payload: Omit<JwtPayload, 'iat' | 'exp'>
+): string {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error('JWT_SECRET is not defined');

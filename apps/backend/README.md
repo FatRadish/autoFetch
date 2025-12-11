@@ -127,6 +127,7 @@ pnpm dev
 ### 认证接口
 
 #### 登录
+
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -138,6 +139,7 @@ Content-Type: application/json
 ```
 
 #### 注册
+
 ```http
 POST /api/auth/register
 Content-Type: application/json
@@ -150,6 +152,7 @@ Content-Type: application/json
 ```
 
 #### 获取当前用户
+
 ```http
 GET /api/auth/me
 Authorization: Bearer <token>
@@ -158,18 +161,21 @@ Authorization: Bearer <token>
 ### 平台管理
 
 #### 获取所有平台
+
 ```http
 GET /api/platforms
 Authorization: Bearer <token>
 ```
 
 #### 获取单个平台
+
 ```http
 GET /api/platforms/:id
 Authorization: Bearer <token>
 ```
 
 #### 创建平台（需要管理员权限）
+
 ```http
 POST /api/platforms
 Authorization: Bearer <token>
@@ -189,12 +195,14 @@ Content-Type: application/json
 ### 账号管理
 
 #### 获取所有账号
+
 ```http
 GET /api/accounts
 Authorization: Bearer <token>
 ```
 
 #### 创建账号
+
 ```http
 POST /api/accounts
 Authorization: Bearer <token>
@@ -301,17 +309,17 @@ pnpm start
 
 ## 环境变量说明
 
-| 变量名 | 说明 | 默认值 |
-|--------|------|--------|
-| PORT | 服务器端口 | 3001 |
-| HOST | 服务器主机 | 0.0.0.0 |
-| NODE_ENV | 运行环境 | development |
-| DATABASE_URL | 数据库连接 | file:./dev.db |
-| JWT_SECRET | JWT 密钥 | - |
-| JWT_EXPIRES_IN | JWT 过期时间 | 7d |
-| ENCRYPTION_SECRET | 加密密钥 | - |
-| CORS_ORIGIN | CORS 来源 | * |
-| LOG_LEVEL | 日志级别 | info |
+| 变量名            | 说明         | 默认值        |
+| ----------------- | ------------ | ------------- |
+| PORT              | 服务器端口   | 3001          |
+| HOST              | 服务器主机   | 0.0.0.0       |
+| NODE_ENV          | 运行环境     | development   |
+| DATABASE_URL      | 数据库连接   | file:./dev.db |
+| JWT_SECRET        | JWT 密钥     | -             |
+| JWT_EXPIRES_IN    | JWT 过期时间 | 7d            |
+| ENCRYPTION_SECRET | 加密密钥     | -             |
+| CORS_ORIGIN       | CORS 来源    | \*            |
+| LOG_LEVEL         | 日志级别     | info          |
 
 ## 常见问题
 

@@ -23,7 +23,10 @@ export function AppProvider({ children }: AppProviderProps) {
 
         {/* 开发环境下显示 React Query DevTools */}
         {import.meta.env.DEV && (
-          <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+          <ReactQueryDevtools
+            initialIsOpen={false}
+            buttonPosition="bottom-right"
+          />
         )}
       </QueryClientProvider>
     </ThemeProvider>

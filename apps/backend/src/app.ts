@@ -7,7 +7,7 @@ import config from './config/index.js';
 import logger from './utils/logger.js';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
 import { apiLimiter } from './middleware/ratelimit.js';
-import seed from '../prisma/seed.js'
+import seed from '../prisma/seed.js';
 import { scheduler } from './scheduler/index.js';
 import { jsonDateReplacer } from './utils/date.js';
 
@@ -15,14 +15,14 @@ import { jsonDateReplacer } from './utils/date.js';
 import authRoutes from './routes/auth.js';
 import platformRoutes from './routes/platforms.js';
 import accountRoutes from './routes/accounts.js';
-import taskRoutes from './routes/task.js'
+import taskRoutes from './routes/task.js';
 
 // 设置开发环境标志
 // const __DEV__ = process.env.NODE_ENV !== 'production';
-try{
+try {
   globalThis.__DEV__ = process.env.NODE_ENV !== 'production';
-}catch(err){
-  console.log("🚀 ~ err:", err)
+} catch (err) {
+  console.log('🚀 ~ err:', err);
 }
 
 const app: Express = express();
@@ -81,9 +81,11 @@ app.use(errorHandler);
 
 // 启动服务器
 const server = app.listen(config.server.port, config.server.host, async () => {
-  logger.info(`Server is running on http://${config.server.host}:${config.server.port}`);
+  logger.info(
+    `Server is running on http://${config.server.host}:${config.server.port}`
+  );
   logger.info(`Environment: ${config.server.env}`);
-  
+
   await seed();
   await scheduler.init();
 });

@@ -1,23 +1,31 @@
 /**
  * Auth 路由集成测试
- * 
+ *
  * 【测试原理】
- * 
+ *
  * 1. 使用真实数据库：不 Mock Prisma，真实执行数据库操作
  * 2. 隔离环境：每个测试使用独立的内存 SQLite 数据库
  * 3. 完整流程测试：HTTP 请求 → 路由 → Service → Prisma → 数据库
- * 
+ *
  * 【与单元测试的区别】
  * - 单元测试：Mock Service，只测试路由逻辑
  * - 集成测试：真实 Service，测试整个流程是否能正确交互
- * 
+ *
  * 【优势】
  * - 发现数据库相关的 bug
  * - 验证完整的业务流程
  * - 使用内存数据库，不影响真实数据
  */
 
-import { describe, it, expect, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  beforeEach,
+  afterEach,
+  afterAll,
+} from 'vitest';
 import express, { type Express } from 'express';
 import request from 'supertest';
 import authRouter from '../../routes/auth';
@@ -61,10 +69,10 @@ describe('Auth Routes - Integration Tests', () => {
     // 创建新的 Express 应用实例
     app = express();
     app.use(express.json());
-    
+
     // 挂载实际的路由（带所有真实中间件）
     app.use('/api/auth', authRouter);
-    
+
     app.use(notFoundHandler);
     app.use(errorHandler);
 
@@ -119,22 +127,18 @@ describe('Auth Routes - Integration Tests', () => {
      */
     it('should fail when username already exists', async () => {
       // 先创建一个用户
-      await request(app)
-        .post('/api/auth/register')
-        .send({
-          username: 'existinguser',
-          password: 'password123',
-          email: 'existing@example.com',
-        });
+      await request(app).post('/api/auth/register').send({
+        username: 'existinguser',
+        password: 'password123',
+        email: 'existing@example.com',
+      });
 
       // 尝试用相同用户名注册
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send({
-          username: 'existinguser',
-          password: 'password456',
-          email: 'different@example.com',
-        });
+      const response = await request(app).post('/api/auth/register').send({
+        username: 'existinguser',
+        password: 'password456',
+        email: 'different@example.com',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
@@ -152,22 +156,18 @@ describe('Auth Routes - Integration Tests', () => {
      */
     it('should fail when email already exists', async () => {
       // 先创建一个用户
-      await request(app)
-        .post('/api/auth/register')
-        .send({
-          username: 'user1',
-          password: 'password123',
-          email: 'duplicate@example.com',
-        });
+      await request(app).post('/api/auth/register').send({
+        username: 'user1',
+        password: 'password123',
+        email: 'duplicate@example.com',
+      });
 
       // 尝试用相同邮箱注册
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send({
-          username: 'user2',
-          password: 'password456',
-          email: 'duplicate@example.com',
-        });
+      const response = await request(app).post('/api/auth/register').send({
+        username: 'user2',
+        password: 'password456',
+        email: 'duplicate@example.com',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
@@ -184,12 +184,10 @@ describe('Auth Routes - Integration Tests', () => {
      * 【测试用例】注册时不提供邮箱也可以
      */
     it('should register user without email', async () => {
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send({
-          username: 'noemailus',
-          password: 'password123',
-        });
+      const response = await request(app).post('/api/auth/register').send({
+        username: 'noemailus',
+        password: 'password123',
+      });
 
       expect(response.status).toBe(201);
       expect(response.body.success).toBe(true);
@@ -209,23 +207,19 @@ describe('Auth Routes - Integration Tests', () => {
      */
     it('should fail when required fields are missing', async () => {
       // 缺少 username
-      const response1 = await request(app)
-        .post('/api/auth/register')
-        .send({
-          password: 'password123',
-          email: 'test@example.com',
-        });
+      const response1 = await request(app).post('/api/auth/register').send({
+        password: 'password123',
+        email: 'test@example.com',
+      });
 
       expect(response1.status).toBe(400);
       expect(response1.body.success).toBe(false);
 
       // 缺少 password
-      const response2 = await request(app)
-        .post('/api/auth/register')
-        .send({
-          username: 'testuser',
-          email: 'test@example.com',
-        });
+      const response2 = await request(app).post('/api/auth/register').send({
+        username: 'testuser',
+        email: 'test@example.com',
+      });
 
       expect(response2.status).toBe(400);
       expect(response2.body.success).toBe(false);
@@ -238,21 +232,17 @@ describe('Auth Routes - Integration Tests', () => {
      */
     it('should login with valid credentials', async () => {
       // 先注册一个用户
-      await request(app)
-        .post('/api/auth/register')
-        .send({
-          username: 'loginuser',
-          password: 'correctpassword',
-          email: 'login@example.com',
-        });
+      await request(app).post('/api/auth/register').send({
+        username: 'loginuser',
+        password: 'correctpassword',
+        email: 'login@example.com',
+      });
 
       // 然后登录
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
-          username: 'loginuser',
-          password: 'correctpassword',
-        });
+      const response = await request(app).post('/api/auth/login').send({
+        username: 'loginuser',
+        password: 'correctpassword',
+      });
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
@@ -268,12 +258,10 @@ describe('Auth Routes - Integration Tests', () => {
      * 【测试用例】错误的用户名会失败
      */
     it('should fail with invalid username', async () => {
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
-          username: 'nonexistentuser',
-          password: 'password123',
-        });
+      const response = await request(app).post('/api/auth/login').send({
+        username: 'nonexistentuser',
+        password: 'password123',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
@@ -285,21 +273,17 @@ describe('Auth Routes - Integration Tests', () => {
      */
     it('should fail with incorrect password', async () => {
       // 先注册一个用户
-      await request(app)
-        .post('/api/auth/register')
-        .send({
-          username: 'wrongpassuser',
-          password: 'correctpassword',
-          email: 'wrongpass@example.com',
-        });
+      await request(app).post('/api/auth/register').send({
+        username: 'wrongpassuser',
+        password: 'correctpassword',
+        email: 'wrongpass@example.com',
+      });
 
       // 用错误的密码登录
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
-          username: 'wrongpassuser',
-          password: 'wrongpassword',
-        });
+      const response = await request(app).post('/api/auth/login').send({
+        username: 'wrongpassuser',
+        password: 'wrongpassword',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
@@ -311,21 +295,17 @@ describe('Auth Routes - Integration Tests', () => {
      */
     it('should fail when required fields are missing', async () => {
       // 缺少 username
-      const response1 = await request(app)
-        .post('/api/auth/login')
-        .send({
-          password: 'password123',
-        });
+      const response1 = await request(app).post('/api/auth/login').send({
+        password: 'password123',
+      });
 
       expect(response1.status).toBe(400);
       expect(response1.body.success).toBe(false);
 
       // 缺少 password
-      const response2 = await request(app)
-        .post('/api/auth/login')
-        .send({
-          username: 'testuser',
-        });
+      const response2 = await request(app).post('/api/auth/login').send({
+        username: 'testuser',
+      });
 
       expect(response2.status).toBe(400);
       expect(response2.body.success).toBe(false);
@@ -340,20 +320,18 @@ describe('Auth Routes - Integration Tests', () => {
       const attempts = [];
       for (let i = 0; i < 10; i++) {
         attempts.push(
-          request(app)
-            .post('/api/auth/login')
-            .send({
-              username: 'anyuser',
-              password: 'wrongpassword',
-            })
+          request(app).post('/api/auth/login').send({
+            username: 'anyuser',
+            password: 'wrongpassword',
+          })
         );
       }
 
       const responses = await Promise.all(attempts);
-      
+
       // 至少某些请求应该被限流（取决于配置）
-      const rateLimitedResponse = responses.find(r => r.status === 429);
-      
+      const rateLimitedResponse = responses.find((r) => r.status === 429);
+
       if (rateLimitedResponse) {
         expect(rateLimitedResponse.status).toBe(429);
       }
@@ -366,20 +344,16 @@ describe('Auth Routes - Integration Tests', () => {
      */
     it('should return current user info when authenticated', async () => {
       // 先注册并登录
-      await request(app)
-        .post('/api/auth/register')
-        .send({
-          username: 'meuser',
-          password: 'password123',
-          email: 'me@example.com',
-        });
+      await request(app).post('/api/auth/register').send({
+        username: 'meuser',
+        password: 'password123',
+        email: 'me@example.com',
+      });
 
-      const loginResponse = await request(app)
-        .post('/api/auth/login')
-        .send({
-          username: 'meuser',
-          password: 'password123',
-        });
+      const loginResponse = await request(app).post('/api/auth/login').send({
+        username: 'meuser',
+        password: 'password123',
+      });
 
       const token = loginResponse.body.data.token;
 
@@ -437,12 +411,10 @@ describe('Auth Routes - Integration Tests', () => {
 
       const userId = registerResponse.body.data.id;
 
-      const loginResponse = await request(app)
-        .post('/api/auth/login')
-        .send({
-          username: 'deleteduser',
-          password: 'password123',
-        });
+      const loginResponse = await request(app).post('/api/auth/login').send({
+        username: 'deleteduser',
+        password: 'password123',
+      });
 
       const token = loginResponse.body.data.token;
 

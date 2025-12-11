@@ -72,7 +72,9 @@ export abstract class BrowserAdapter extends BasePlatformAdapter {
             value: cookie.value,
             domain: cookie.domain,
             path: cookie.path || '/',
-            expires: cookie.expires ? Math.floor(cookie.expires.getTime() / 1000) : -1,
+            expires: cookie.expires
+              ? Math.floor(cookie.expires.getTime() / 1000)
+              : -1,
             httpOnly: cookie.httpOnly ?? false,
             secure: cookie.secure ?? false,
             sameSite: (cookie.sameSite as 'Strict' | 'Lax' | 'None') || 'Lax',
@@ -87,16 +89,19 @@ export abstract class BrowserAdapter extends BasePlatformAdapter {
             const hostname = url.hostname;
             // 提取主域名（如 www.bilibili.com -> .bilibili.com）
             const domainParts = hostname.split('.');
-            const mainDomain = domainParts.length >= 2
-              ? `.${domainParts.slice(-2).join('.')}`
-              : hostname;
+            const mainDomain =
+              domainParts.length >= 2
+                ? `.${domainParts.slice(-2).join('.')}`
+                : hostname;
 
             return {
               name: cookie.name,
               value: cookie.value,
               domain: mainDomain,
               path: cookie.path || '/',
-              expires: cookie.expires ? Math.floor(cookie.expires.getTime() / 1000) : -1,
+              expires: cookie.expires
+                ? Math.floor(cookie.expires.getTime() / 1000)
+                : -1,
               httpOnly: cookie.httpOnly ?? false,
               secure: cookie.secure ?? false,
               sameSite: (cookie.sameSite as 'Strict' | 'Lax' | 'None') || 'Lax',
@@ -111,7 +116,9 @@ export abstract class BrowserAdapter extends BasePlatformAdapter {
           name: cookie.name,
           value: cookie.value,
           path: cookie.path || '/',
-          expires: cookie.expires ? Math.floor(cookie.expires.getTime() / 1000) : -1,
+          expires: cookie.expires
+            ? Math.floor(cookie.expires.getTime() / 1000)
+            : -1,
           httpOnly: cookie.httpOnly ?? false,
           secure: cookie.secure ?? false,
           sameSite: (cookie.sameSite as 'Strict' | 'Lax' | 'None') || 'Lax',
@@ -141,7 +148,10 @@ export abstract class BrowserAdapter extends BasePlatformAdapter {
     }
 
     // 添加额外的请求头
-    if (execContext.account.headers && Object.keys(execContext.account.headers).length > 0) {
+    if (
+      execContext.account.headers &&
+      Object.keys(execContext.account.headers).length > 0
+    ) {
       await this.context.setExtraHTTPHeaders(execContext.account.headers);
     }
 
@@ -233,7 +243,10 @@ export abstract class BrowserAdapter extends BasePlatformAdapter {
   /**
    * 点击元素（带重试）
    */
-  protected async clickElement(selector: string, options: { timeout?: number } = {}): Promise<void> {
+  protected async clickElement(
+    selector: string,
+    options: { timeout?: number } = {}
+  ): Promise<void> {
     if (!this.page) {
       throw new Error('Page not initialized');
     }
@@ -248,7 +261,11 @@ export abstract class BrowserAdapter extends BasePlatformAdapter {
   /**
    * 填写输入框
    */
-  protected async fillInput(selector: string, value: string, options: { timeout?: number } = {}): Promise<void> {
+  protected async fillInput(
+    selector: string,
+    value: string,
+    options: { timeout?: number } = {}
+  ): Promise<void> {
     if (!this.page) {
       throw new Error('Page not initialized');
     }
@@ -263,7 +280,10 @@ export abstract class BrowserAdapter extends BasePlatformAdapter {
   /**
    * 获取元素文本
    */
-  protected async getText(selector: string, options: { timeout?: number } = {}): Promise<string> {
+  protected async getText(
+    selector: string,
+    options: { timeout?: number } = {}
+  ): Promise<string> {
     if (!this.page) {
       throw new Error('Page not initialized');
     }
@@ -278,7 +298,10 @@ export abstract class BrowserAdapter extends BasePlatformAdapter {
   /**
    * 等待元素出现
    */
-  protected async waitForElement(selector: string, timeout = 5000): Promise<void> {
+  protected async waitForElement(
+    selector: string,
+    timeout = 5000
+  ): Promise<void> {
     if (!this.page) {
       throw new Error('Page not initialized');
     }

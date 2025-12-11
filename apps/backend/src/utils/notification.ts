@@ -80,7 +80,10 @@ function parseTemplate(template: string, log: TaskExecutionLog): unknown {
     result = result.replace(/\{\{status\}\}/g, log.status);
     result = result.replace(/\{\{message\}\}/g, log.message || '');
     result = result.replace(/\{\{startedAt\}\}/g, log.startedAt.toISOString());
-    result = result.replace(/\{\{finishedAt\}\}/g, log.finishedAt?.toISOString() || '');
+    result = result.replace(
+      /\{\{finishedAt\}\}/g,
+      log.finishedAt?.toISOString() || ''
+    );
 
     return JSON.parse(result);
   } catch (error) {

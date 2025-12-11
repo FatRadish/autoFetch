@@ -8,9 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "Debug Current TS File",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${file}",
       "cwd": "${workspaceFolder}/apps/backend",
       "runtimeExecutable": "${workspaceFolder}/apps/backend/node_modules/.bin/tsx",
@@ -25,17 +23,13 @@
       "request": "attach",
       "name": "Attach to Process",
       "port": 9229,
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "type": "node",
       "request": "launch",
       "name": "调试Express",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/apps/backend/src/app.ts",
       "cwd": "${workspaceFolder}/apps/backend",
       "runtimeExecutable": "${workspaceFolder}/apps/backend/node_modules/.bin/tsx",

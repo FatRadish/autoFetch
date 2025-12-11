@@ -1,6 +1,10 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import { BasePlatformAdapter } from './base.js';
-import type { ExecutionContext, ExecutionResult, RequestOptions } from '../types/index.js';
+import type {
+  ExecutionContext,
+  ExecutionResult,
+  RequestOptions,
+} from '../types/index.js';
 import { cookiesToHeaderString, parseCookies } from '../utils/cookie.js';
 
 /**
@@ -94,7 +98,10 @@ export abstract class HttpAdapter extends BasePlatformAdapter {
   /**
    * 执行 GET 请求
    */
-  protected async get(url: string, context: ExecutionContext): Promise<unknown> {
+  protected async get(
+    url: string,
+    context: ExecutionContext
+  ): Promise<unknown> {
     return this.makeRequest({
       url,
       method: 'GET',
@@ -109,7 +116,11 @@ export abstract class HttpAdapter extends BasePlatformAdapter {
   /**
    * 执行 POST 请求
    */
-  protected async post(url: string, data: unknown, context: ExecutionContext): Promise<unknown> {
+  protected async post(
+    url: string,
+    data: unknown,
+    context: ExecutionContext
+  ): Promise<unknown> {
     return this.makeRequest({
       url,
       method: 'POST',

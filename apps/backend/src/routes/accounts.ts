@@ -16,7 +16,10 @@ router.get(
   authMiddleware,
   asyncHandler(async (req, res) => {
     const platformId = req.query.platformId as string | undefined;
-    const accounts = await AccountService.getAll({platformId,user:req.user!});
+    const accounts = await AccountService.getAll({
+      platformId,
+      user: req.user!,
+    });
 
     res.json({
       success: true,
@@ -34,7 +37,11 @@ router.get(
   authMiddleware,
   asyncHandler(async (req, res) => {
     const includeCookies = req.query.includeCookies === 'true';
-    const account = await AccountService.getById(req.params.id!,req.user!, includeCookies);
+    const account = await AccountService.getById(
+      req.params.id!,
+      req.user!,
+      includeCookies
+    );
 
     res.json({
       success: true,
@@ -54,7 +61,7 @@ router.post(
   asyncHandler(async (req, res) => {
     const data = validate(schemas.createAccount, req.body);
 
-    const account = await AccountService.create({...data,user:req.user});
+    const account = await AccountService.create({ ...data, user: req.user });
 
     res.status(201).json({
       success: true,

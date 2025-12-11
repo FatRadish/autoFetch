@@ -1,13 +1,20 @@
 import prisma from '../lib/prisma.js';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../middleware/auth.js';
-import { UnauthorizedError, ValidationError, type AuthResponse } from '../types/index.js';
+import {
+  UnauthorizedError,
+  ValidationError,
+  type AuthResponse,
+} from '../types/index.js';
 
 export class AuthService {
   /**
    * 用户登录
    */
-  static async login(username: string, password: string): Promise<AuthResponse> {
+  static async login(
+    username: string,
+    password: string
+  ): Promise<AuthResponse> {
     // 查找用户
     const user = await prisma.user.findUnique({
       where: { username },

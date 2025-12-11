@@ -12,7 +12,9 @@ export function validate<T>(schema: z.ZodSchema<T>, data: unknown): T {
     return schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const messages = error.issues.map((err: any) => `${err.path.join('.')}: ${err.message}`);
+      const messages = error.issues.map(
+        (err: any) => `${err.path.join('.')}: ${err.message}`
+      );
       throw new ValidationError(messages.join('; '));
     }
     throw error;
@@ -30,7 +32,9 @@ export function safeValidate<T>(
   if (result.success) {
     return { success: true, data: result.data };
   } else {
-    const messages = result.error.issues.map((err) => `${err.path.join('.')}: ${err.message}`);
+    const messages = result.error.issues.map(
+      (err) => `${err.path.join('.')}: ${err.message}`
+    );
     return { success: false, error: messages.join('; ') };
   }
 }
@@ -132,9 +136,12 @@ export const schemas = {
   createTask: z.object({
     accountId: z.string().cuid(),
     name: z.string().min(1, 'Task name is required'),
-    schedule: z.string().min(1, 'Schedule is required').refine((val) => isValidCron(val), {
-      message: 'Invalid cron expression',
-    }),
+    schedule: z
+      .string()
+      .min(1, 'Schedule is required')
+      .refine((val) => isValidCron(val), {
+        message: 'Invalid cron expression',
+      }),
     retryTimes: z.number().min(0).max(10).default(3),
     timeout: z.number().min(1000).max(300000).default(30000),
     config: z.record(z.string(), z.unknown()).optional(),
@@ -143,9 +150,13 @@ export const schemas = {
 
   updateTask: z.object({
     name: z.string().min(1).optional(),
-    schedule: z.string().min(1).optional().refine((val) => val === undefined || isValidCron(val), {
-      message: 'Invalid cron expression',
-    }),
+    schedule: z
+      .string()
+      .min(1)
+      .optional()
+      .refine((val) => val === undefined || isValidCron(val), {
+        message: 'Invalid cron expression',
+      }),
     enabled: z.boolean().optional(),
     retryTimes: z.number().min(0).max(10).optional(),
     timeout: z.number().min(1000).max(300000).optional(),

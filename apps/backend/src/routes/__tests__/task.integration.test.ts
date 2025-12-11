@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  beforeEach,
+  afterEach,
+  afterAll,
+} from 'vitest';
 import express, { type Express } from 'express';
 import request from 'supertest';
 import taskRouter from '../../routes/task';
@@ -23,7 +31,7 @@ describe('Task Routes - Integration Tests', () => {
   beforeEach(async () => {
     app = express();
     app.use(express.json());
-    
+
     app.use((req, res, next) => {
       req.user = {
         userId: 'test_user_id',
@@ -32,9 +40,9 @@ describe('Task Routes - Integration Tests', () => {
       };
       next();
     });
-    
+
     app.use('/api/tasks', taskRouter);
-    
+
     app.use(notFoundHandler);
     app.use(errorHandler);
 
@@ -186,7 +194,9 @@ describe('Task Routes - Integration Tests', () => {
     });
 
     it('should return 404 when task not found', async () => {
-      const response = await request(app).get('/api/tasks/task/non-existent-id');
+      const response = await request(app).get(
+        '/api/tasks/task/non-existent-id'
+      );
 
       expect(response.status).toBe(404);
     });
@@ -201,9 +211,7 @@ describe('Task Routes - Integration Tests', () => {
         enabled: true,
       };
 
-      const response = await request(app)
-        .post('/api/tasks')
-        .send(createData);
+      const response = await request(app).post('/api/tasks').send(createData);
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
@@ -220,13 +228,11 @@ describe('Task Routes - Integration Tests', () => {
     });
 
     it('should fail when account does not exist', async () => {
-      const response = await request(app)
-        .post('/api/tasks')
-        .send({
-          accountId: 'non-existent-account',
-          name: 'Test Task',
-          schedule: '0 0 * * *',
-        });
+      const response = await request(app).post('/api/tasks').send({
+        accountId: 'non-existent-account',
+        name: 'Test Task',
+        schedule: '0 0 * * *',
+      });
 
       expect(response.status).toBe(400);
     });
@@ -241,36 +247,30 @@ describe('Task Routes - Integration Tests', () => {
         },
       });
 
-      const response = await request(app)
-        .post('/api/tasks')
-        .send({
-          accountId: testAccountId,
-          name: 'Duplicate Task',
-          schedule: '0 12 * * *',
-        });
+      const response = await request(app).post('/api/tasks').send({
+        accountId: testAccountId,
+        name: 'Duplicate Task',
+        schedule: '0 12 * * *',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toContain('任务名称已存在！');
     });
 
     it('should fail when required fields are missing', async () => {
-      const response = await request(app)
-        .post('/api/tasks')
-        .send({
-          accountId: testAccountId,
-        });
+      const response = await request(app).post('/api/tasks').send({
+        accountId: testAccountId,
+      });
 
       expect(response.status).toBe(400);
     });
 
     it('should fail with invalid cron schedule', async () => {
-      const response = await request(app)
-        .post('/api/tasks')
-        .send({
-          accountId: testAccountId,
-          name: 'Invalid Task',
-          schedule: 'invalid cron',
-        });
+      const response = await request(app).post('/api/tasks').send({
+        accountId: testAccountId,
+        name: 'Invalid Task',
+        schedule: 'invalid cron',
+      });
 
       expect(response.status).toBe(400);
     });
@@ -287,13 +287,11 @@ describe('Task Routes - Integration Tests', () => {
         },
       });
 
-      const response = await request(app)
-        .patch(`/api/tasks/${task.id}`)
-        .send({
-          name: 'Updated Task',
-          schedule: '0 12 * * *',
-          enabled: false,
-        });
+      const response = await request(app).patch(`/api/tasks/${task.id}`).send({
+        name: 'Updated Task',
+        schedule: '0 12 * * *',
+        enabled: false,
+      });
 
       expect(response.status).toBe(200);
       expect(response.body.data.name).toBe('Updated Task');
@@ -416,7 +414,9 @@ describe('Task Routes - Integration Tests', () => {
     });
 
     it('should fail when triggering non-existent task', async () => {
-      const response = await request(app).post('/api/tasks/non-existent-id/run');
+      const response = await request(app).post(
+        '/api/tasks/non-existent-id/run'
+      );
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(false);

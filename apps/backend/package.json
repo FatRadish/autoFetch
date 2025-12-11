@@ -15,11 +15,11 @@
     "browser:install": "playwright install chromium",
     "test": "pnpm test:integration",
     "test:unit": "vitest --config vitest.config.ts",
-    "test:integration": "vitest --config vitest.integration.config.ts", 
+    "test:integration": "vitest --config vitest.integration.config.ts",
     "test:all": "pnpm test:unit && pnpm test:integration",
     "test:utils": "pnpm test:unit",
     "test:ui": "vitest --ui",
-    "lint": "eslint src --ext .ts",
+    "lint": "oxlint src",
     "format": "prettier --write \"src/**/*.ts\""
   },
   "keywords": [
@@ -50,7 +50,6 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@auto-fetch/eslint-config": "workspace:*",
     "@auto-fetch/typescript-config": "workspace:*",
     "@types/bcryptjs": "^3.0.0",
     "@types/cookie-parser": "^1.4.7",

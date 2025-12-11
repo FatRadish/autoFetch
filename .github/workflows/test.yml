@@ -15,19 +15,19 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [22.x]
-    
+
     env:
       DATABASE_URL: file:./test.db
       NODE_ENV: test
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Prepare backend env
         run: cp apps/backend/.env.example apps/backend/.env
 
@@ -35,17 +35,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 10.22.0
-      
+
       - name: Get pnpm store directory
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-      
+
       - name: Setup pnpm cache
         uses: actions/cache@v3
         with:
@@ -53,15 +53,15 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      
+
       - name: Install dependencies
-        run: pnpm install 
-      
+        run: pnpm install
+
       - name: Generate Prisma Client
         run: pnpm --filter backend run prisma:generate
-      
+
       - name: Run backend unit tests
         run: pnpm --filter backend run test:unit
-      
+
       - name: Run backend integration tests
         run: pnpm --filter backend run test:integration

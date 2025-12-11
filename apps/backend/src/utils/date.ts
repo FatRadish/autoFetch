@@ -57,7 +57,9 @@ export function jsonDateReplacer(key: string, value: unknown): unknown {
  * @param date 日期对象或日期字符串
  * @returns 相对时间描述，如 "5分钟前"、"2小时前"
  */
-export function getRelativeTime(date: Date | string | null | undefined): string | null {
+export function getRelativeTime(
+  date: Date | string | null | undefined
+): string | null {
   if (!date) return null;
 
   const d = typeof date === 'string' ? new Date(date) : date;

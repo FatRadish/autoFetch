@@ -2,7 +2,11 @@ import prisma from '../lib/prisma.js';
 import { decrypt, encrypt } from '../utils/encrypt.js';
 import config from '../config/index.js';
 import type { JwtPayload } from '../types/index.js';
-import { performCookieRefresh, formatCookiesForHeader, type PerformRefreshOptions } from '../utils/bilibili-refresh.js';
+import {
+  performCookieRefresh,
+  formatCookiesForHeader,
+  type PerformRefreshOptions,
+} from '../utils/bilibili-refresh.js';
 import { NotFoundError } from '../types/index.js';
 
 export interface AccountRefreshResult {
@@ -16,14 +20,20 @@ export interface AccountRefreshResult {
   error?: string;
 }
 
-type LoggerFn = (level: 'info' | 'warn' | 'error', message: string, ...meta: unknown[]) => void;
+type LoggerFn = (
+  level: 'info' | 'warn' | 'error',
+  message: string,
+  ...meta: unknown[]
+) => void;
 
 function ensureLogger(logger?: LoggerFn): LoggerFn {
   if (logger) {
     return logger;
   }
   return (level, message, ...meta) => {
-    const metaText = meta.length ? ` ${meta.map((item) => JSON.stringify(item)).join(' ')}` : '';
+    const metaText = meta.length
+      ? ` ${meta.map((item) => JSON.stringify(item)).join(' ')}`
+      : '';
     const record = `[AccountRefresh] ${message}${metaText}`;
     if (level === 'error') {
       console.error(record);
@@ -76,10 +86,14 @@ export class AccountRefreshService {
 
     log('info', `Refreshing cookies for account ${account.name}`);
 
-    const refreshResult = await performCookieRefresh(decryptedCookies, account.refreshToken, {
-      force: options.force,
-      logger: (level, msg, ...meta) => log(level, msg, ...meta),
-    });
+    const refreshResult = await performCookieRefresh(
+      decryptedCookies,
+      account.refreshToken,
+      {
+        force: options.force,
+        logger: (level, msg, ...meta) => log(level, msg, ...meta),
+      }
+    );
 
     if (!refreshResult.success) {
       const errorMsg = refreshResult.error ?? 'Unknown refresh error';
@@ -103,8 +117,13 @@ export class AccountRefreshService {
       };
     }
 
-    const updatedCookieHeader = formatCookiesForHeader(refreshResult.updatedCookies);
-    const encryptedCookies = encrypt(updatedCookieHeader, config.encryption.secret);
+    const updatedCookieHeader = formatCookiesForHeader(
+      refreshResult.updatedCookies
+    );
+    const encryptedCookies = encrypt(
+      updatedCookieHeader,
+      config.encryption.secret
+    );
 
     const updated = await prisma.account.update({
       where: { id: accountId },
@@ -125,7 +144,8 @@ export class AccountRefreshService {
       accountId: updated.id,
       refreshed: true,
       updatedCookies: updatedCookieHeader,
-      updatedRefreshToken: refreshResult.newRefreshToken ?? account.refreshToken,
+      updatedRefreshToken:
+        refreshResult.newRefreshToken ?? account.refreshToken,
       nextSuggestedRefresh: nextSuggest,
     };
   }

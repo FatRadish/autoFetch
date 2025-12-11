@@ -1,18 +1,18 @@
-import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import { User } from '@/api/login'
+import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
+import { User } from '@/api/login';
 
 // 用户状态接口
 
 interface AuthState {
-  user: User | null
-  token: string | null
-  isAuthenticated: boolean
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
 
   // Actions
-  login: (user: User, token: string) => void
-  logout: () => void
-  updateUser: (user: Partial<User>) => void
+  login: (user: User, token: string) => void;
+  logout: () => void;
+  updateUser: (user: Partial<User>) => void;
 }
 
 // 认证状态 Store
@@ -28,7 +28,11 @@ export const useAuthStore = create<AuthState>()(
           set({ user, token, isAuthenticated: true }, false, 'auth/login'),
 
         logout: () =>
-          set({ user: null, token: null, isAuthenticated: false }, false, 'auth/logout'),
+          set(
+            { user: null, token: null, isAuthenticated: false },
+            false,
+            'auth/logout'
+          ),
 
         updateUser: (userData) =>
           set(
@@ -44,4 +48,4 @@ export const useAuthStore = create<AuthState>()(
       }
     )
   )
-)
+);

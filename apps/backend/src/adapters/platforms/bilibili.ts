@@ -9,7 +9,7 @@ import { AccountRefreshService } from '../../services/AccountRefreshService.js';
  */
 export class BilibiliAdapter extends BrowserAdapter {
   readonly name = 'bilibili';
-  page:Page | null = null;
+  page: Page | null = null;
 
   async execute(context: ExecutionContext): Promise<ExecutionResult> {
     try {
@@ -20,23 +20,41 @@ export class BilibiliAdapter extends BrowserAdapter {
       // 尝试刷新 Cookie（如果可能）
       if (context.account.refreshToken) {
         try {
-          const refreshResult = await AccountRefreshService.refreshAccountCookie(context.account.id, {
-            logger: (level, message, ...meta) =>
-              this.log(level, message, meta.length ? meta : undefined),
-          });
+          const refreshResult =
+            await AccountRefreshService.refreshAccountCookie(
+              context.account.id,
+              {
+                logger: (level, message, ...meta) =>
+                  this.log(level, message, meta.length ? meta : undefined),
+              }
+            );
 
-          if (refreshResult.success && refreshResult.refreshed && refreshResult.updatedCookies) {
+          if (
+            refreshResult.success &&
+            refreshResult.refreshed &&
+            refreshResult.updatedCookies
+          ) {
             context.account.cookies = refreshResult.updatedCookies;
             context.account.refreshToken = refreshResult.updatedRefreshToken;
             this.log('info', 'Cookies refreshed before task execution');
           } else if (!refreshResult.success) {
-            this.log('warn', `Cookie refresh skipped: ${refreshResult.message}`);
+            this.log(
+              'warn',
+              `Cookie refresh skipped: ${refreshResult.message}`
+            );
           }
         } catch (error) {
-          this.log('warn', 'Cookie refresh attempt failed, proceeding with existing cookies', error);
+          this.log(
+            'warn',
+            'Cookie refresh attempt failed, proceeding with existing cookies',
+            error
+          );
         }
       } else {
-        this.log('warn', 'No refresh token provided; automatic cookie refresh skipped');
+        this.log(
+          'warn',
+          'No refresh token provided; automatic cookie refresh skipped'
+        );
       }
 
       // 初始化浏览器（使用非 headless 模式避免反爬虫检测）
@@ -125,7 +143,10 @@ export class BilibiliAdapter extends BrowserAdapter {
 
       // 检查是否跳转到登录页面
       if (pageInfo.url.includes('passport.bilibili.com/login')) {
-        this.log('error', 'Redirected to login page - cookies may be invalid or expired');
+        this.log(
+          'error',
+          'Redirected to login page - cookies may be invalid or expired'
+        );
         await this.screenshot('./debug-redirect-to-login.png');
         return false;
       }
@@ -191,7 +212,7 @@ export class BilibiliAdapter extends BrowserAdapter {
    */
   async performCheckIn(): Promise<ExecutionResult> {
     const results: string[] = [];
-    if(this.page === null) {
+    if (this.page === null) {
       this.log('error', 'Page is not initialized');
       return {
         success: false,
@@ -199,7 +220,6 @@ export class BilibiliAdapter extends BrowserAdapter {
       };
     }
     try {
-
       // 领取b币
       const vipBenefits = await this.getVipBenefits(this.page);
       if (vipBenefits) {
@@ -239,14 +259,19 @@ export class BilibiliAdapter extends BrowserAdapter {
       // 执行领取权益的操作
       const result = await page.evaluate(async () => {
         try {
-          const response = await fetch('https://api.bilibili.com/x/vip/privilege/receive', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'type=1&csrf=' + document.cookie.match(/bili_jct=([^;]+)/)?.[1] || '',
-          });
+          const response = await fetch(
+            'https://api.bilibili.com/x/vip/privilege/receive',
+            {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body:
+                'type=1&csrf=' +
+                  document.cookie.match(/bili_jct=([^;]+)/)?.[1] || '',
+            }
+          );
 
           const data = await response.json();
           return data;
@@ -258,7 +283,10 @@ export class BilibiliAdapter extends BrowserAdapter {
       if (result && result.code === 0) {
         this.log('info', 'VIP benefits received successfully');
         return '会员权益领取成功';
-      } else if (result && (result.code === -400 || result.message?.includes('已'))) {
+      } else if (
+        result &&
+        (result.code === -400 || result.message?.includes('已'))
+      ) {
         this.log('info', 'VIP benefits already claimed today');
         return '会员权益已领取';
       } else {
@@ -270,5 +298,4 @@ export class BilibiliAdapter extends BrowserAdapter {
       return null;
     }
   }
-
 }

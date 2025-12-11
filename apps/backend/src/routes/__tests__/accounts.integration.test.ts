@@ -1,23 +1,31 @@
 /**
  * Accounts 路由集成测试
- * 
+ *
  * 【测试原理】
- * 
+ *
  * 1. 使用真实数据库：不 Mock Prisma，真实执行数据库操作
  * 2. 隔离环境：每个测试使用独立的内存 SQLite 数据库
  * 3. 完整流程测试：HTTP 请求 → 路由 → Service → Prisma → 数据库
- * 
+ *
  * 【与单元测试的区别】
  * - 单元测试：Mock Service，只测试路由逻辑
  * - 集成测试：真实 Service，测试整个流程是否能正确交互
- * 
+ *
  * 【优势】
  * - 发现数据库相关的 bug
  * - 验证完整的业务流程
  * - 使用内存数据库，不影响真实数据
  */
 
-import { describe, it, expect, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  beforeEach,
+  afterEach,
+  afterAll,
+} from 'vitest';
 import express, { type Express } from 'express';
 import request from 'supertest';
 import accountsRouter from '../../routes/accounts';
@@ -60,7 +68,7 @@ describe('Accounts Routes - Integration Tests', () => {
     // 创建新的 Express 应用实例
     app = express();
     app.use(express.json());
-    
+
     // 挂载实际的路由（带所有真实中间件）
     // 但需要在 app 中添加实际的 authMiddleware 等
     // 这里为了简化，我们创建一个带有模拟认证的 app
@@ -73,9 +81,9 @@ describe('Accounts Routes - Integration Tests', () => {
       };
       next();
     });
-    
+
     app.use('/api/accounts', accountsRouter);
-    
+
     app.use(notFoundHandler);
     app.use(errorHandler);
 
@@ -92,7 +100,7 @@ describe('Accounts Routes - Integration Tests', () => {
       data: {
         id: 'test_user_id',
         username: 'testuser',
-        password: 'hashed_password',  // 集成测试中不需要真实密码
+        password: 'hashed_password', // 集成测试中不需要真实密码
         role: 'user',
       },
     });
@@ -142,7 +150,7 @@ describe('Accounts Routes - Integration Tests', () => {
       const account = await prisma.account.create({
         data: {
           platformId: platform.id,
-          userId: 'test_user_id',  // 与认证用户匹配
+          userId: 'test_user_id', // 与认证用户匹配
           name: 'Test Account',
           cookies: 'encrypted_test=cookie',
           userAgent: 'Test Agent',
@@ -193,21 +201,23 @@ describe('Accounts Routes - Integration Tests', () => {
       await request(app).post(`/api/accounts/`).send({
         platformId: platform1.id,
         name: 'Account 1',
-        cookies: 'buvid3=392113AD; b_nut=1756525273; _uuid=CC535FF10-61B4-B696-5F103-868BA63B82F1073979infoc;',
+        cookies:
+          'buvid3=392113AD; b_nut=1756525273; _uuid=CC535FF10-61B4-B696-5F103-868BA63B82F1073979infoc;',
         userAgent: 'Test Agent',
       });
-      
-      
+
       await request(app).post(`/api/accounts/`).send({
         platformId: platform2.id,
         name: 'Test Account',
-        cookies: 'buvid3=392113AD; b_nut=1756525273; _uuid=CC535FF10-61B4-B696-5F103-868BA63B82F1073979infoc;',
+        cookies:
+          'buvid3=392113AD; b_nut=1756525273; _uuid=CC535FF10-61B4-B696-5F103-868BA63B82F1073979infoc;',
         userAgent: 'Test Agent',
       });
 
-
       // 只查询 platform1 的账号
-      const response = await request(app).get(`/api/accounts?platformId=${platform1.id}`);
+      const response = await request(app).get(
+        `/api/accounts?platformId=${platform1.id}`
+      );
 
       expect(response.status).toBe(200);
       expect(response.body.data).toHaveLength(1);
@@ -339,11 +349,14 @@ describe('Accounts Routes - Integration Tests', () => {
       const account = await request(app).post(`/api/accounts/`).send({
         platformId: platform.id,
         name: 'Test Account',
-        cookies: 'buvid3=392113AD; b_nut=1756525273; _uuid=CC535FF10-61B4-B696-5F103-868BA63B82F1073979infoc;',
+        cookies:
+          'buvid3=392113AD; b_nut=1756525273; _uuid=CC535FF10-61B4-B696-5F103-868BA63B82F1073979infoc;',
         userAgent: 'Test Agent',
       });
 
-      const response = await request(app).get(`/api/accounts/${account.body.data.id}?includeCookies=true`);
+      const response = await request(app).get(
+        `/api/accounts/${account.body.data.id}?includeCookies=true`
+      );
 
       expect(response.status).toBe(200);
       // 应该返回解密后的 cookie（在真实场景中）
@@ -390,7 +403,7 @@ describe('Accounts Routes - Integration Tests', () => {
       const account = await prisma.account.create({
         data: {
           platformId: platform.id,
-          userId: 'test_user_id11',  // 不同的用户
+          userId: 'test_user_id11', // 不同的用户
           name: 'Other User Account',
           cookies: 'encrypted_other',
           userAgent: 'Other Agent',
@@ -467,20 +480,18 @@ describe('Accounts Routes - Integration Tests', () => {
       await request(app).post(`/api/accounts/`).send({
         platformId: platform.id,
         name: 'Duplicate Name',
-        cookies: 'buvid3=392113AD; b_nut=1756525273; _uuid=CC535FF10-61B4-B696-5F103-868BA63B82F1073979infoc;',
+        cookies:
+          'buvid3=392113AD; b_nut=1756525273; _uuid=CC535FF10-61B4-B696-5F103-868BA63B82F1073979infoc;',
         userAgent: 'Test Agent',
       });
 
-
       // 尝试创建同名账号
-      const response = await request(app)
-        .post('/api/accounts')
-        .send({
-          platformId: platform.id,
-          name: 'Duplicate Name',
-          cookies: 'new_cookie=value',
-          userAgent: 'Agent 2',
-        });
+      const response = await request(app).post('/api/accounts').send({
+        platformId: platform.id,
+        name: 'Duplicate Name',
+        cookies: 'new_cookie=value',
+        userAgent: 'Agent 2',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.error).toContain('already exists');
@@ -490,14 +501,12 @@ describe('Accounts Routes - Integration Tests', () => {
      * 【测试用例】平台不存在会失败
      */
     it('should fail when platform does not exist', async () => {
-      const response = await request(app)
-        .post('/api/accounts')
-        .send({
-          platformId: 'non-existent-platform',
-          name: 'Test Account',
-          cookies: 'test=cookie',
-          userAgent: 'Test Agent',
-        });
+      const response = await request(app).post('/api/accounts').send({
+        platformId: 'non-existent-platform',
+        name: 'Test Account',
+        cookies: 'test=cookie',
+        userAgent: 'Test Agent',
+      });
 
       expect(response.status).toBe(400);
     });
@@ -521,7 +530,8 @@ describe('Accounts Routes - Integration Tests', () => {
       const account = await request(app).post(`/api/accounts/`).send({
         platformId: platform.id,
         name: 'Original Name',
-        cookies: 'buvid3=392113AD; b_nut=1756525273; _uuid=CC535FF10-61B4-B696-5F103-868BA63B82F1073979infoc;',
+        cookies:
+          'buvid3=392113AD; b_nut=1756525273; _uuid=CC535FF10-61B4-B696-5F103-868BA63B82F1073979infoc;',
         userAgent: 'Test Agent',
       });
 

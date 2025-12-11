@@ -10,7 +10,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { useLanguage, LANGUAGE_NAMES, type SupportedLanguage } from '../lib/i18n';
+import {
+  useLanguage,
+  LANGUAGE_NAMES,
+  type SupportedLanguage,
+} from '../lib/i18n';
 
 export function LanguageToggle() {
   const { language, changeLanguage, supportedLanguages } = useLanguage();

@@ -69,7 +69,9 @@ export function getCurrentLanguage(): SupportedLanguage {
 /**
  * 切换语言
  */
-export async function changeLanguage(lng: SupportedLanguage): Promise<TFunction> {
+export async function changeLanguage(
+  lng: SupportedLanguage
+): Promise<TFunction> {
   return i18next.changeLanguage(lng);
 }
 
@@ -83,7 +85,10 @@ export function isSupportedLanguage(lng: string): lng is SupportedLanguage {
 /**
  * 翻译函数 - 使用全局实例
  */
-export function t(key: TranslationKey, options?: Record<string, unknown>): string {
+export function t(
+  key: TranslationKey,
+  options?: Record<string, unknown>
+): string {
   return i18next.t(key, options);
 }
 

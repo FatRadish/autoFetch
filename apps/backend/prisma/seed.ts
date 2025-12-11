@@ -1,10 +1,10 @@
-import prisma from '../src/lib/prisma'
+import prisma from '../src/lib/prisma';
 import bcrypt from 'bcryptjs';
 import logger from '@/utils/logger';
 
 export default async function seed() {
   try {
-    logger.info('Starting database seeding...')
+    logger.info('Starting database seeding...');
 
     // 创建默认管理员用户
     const hashedPassword = await bcrypt.hash('admin123', 10);
@@ -18,7 +18,7 @@ export default async function seed() {
         role: 'admin',
       },
     });
-    logger.info(`Created admin user:${admin.username}`)
+    logger.info(`Created admin user:${admin.username}`);
 
     // 创建示例平台
     const platforms = [
@@ -51,13 +51,13 @@ export default async function seed() {
           key: 'bilibili_vip_privilege',
         },
       });
-      logger.info(`Created platform:${platform.name}`)
-      logger.info(`Created platformTask:${platformTask.name}`)
+      logger.info(`Created platform:${platform.name}`);
+      logger.info(`Created platformTask:${platformTask.name}`);
     }
     //平台任务
-    logger.info(`Database seeding completed!`)
+    logger.info(`Database seeding completed!`);
   } catch (error) {
-    logger.error(`seed is error${error}`)
+    logger.error(`seed is error${error}`);
   } finally {
     await prisma.$disconnect();
   }

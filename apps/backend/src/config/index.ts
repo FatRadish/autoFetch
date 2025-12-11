@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 // 加载环境变量（静默模式）
 dotenv.config({
   path: path.join(__dirname, '../../.env'),
-  debug: false // 关闭调试信息输出
+  debug: false, // 关闭调试信息输出
 });
 
 export const config = {
@@ -32,7 +32,9 @@ export const config = {
 
   // 加密配置
   encryption: {
-    secret: process.env.ENCRYPTION_SECRET || 'your-encryption-secret-change-in-production',
+    secret:
+      process.env.ENCRYPTION_SECRET ||
+      'your-encryption-secret-change-in-production',
   },
 
   // CORS 配置

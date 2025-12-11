@@ -1,6 +1,11 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
 import type { ApiResponse } from './types.ts';
-import { useAuthStore } from '@/store/authStore'
+import { useAuthStore } from '@/store/authStore';
 
 // `useTranslation().t` 在类型上通常接受更具体的 key 联合类型并可接收可选的插值参数。
 // 为了让它可被注入，我们将 `Translator` 定义为更通用的签名。
@@ -31,7 +36,7 @@ class Request {
     // 请求拦截器
     this.instance.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
-        const { token } = useAuthStore.getState()
+        const { token } = useAuthStore.getState();
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -106,28 +111,40 @@ class Request {
   /**
    * POST 请求
    */
-  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>{
+  post<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     return this.instance.post(url, data, config);
   }
 
   /**
    * PUT 请求
    */
-  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  put<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     return this.instance.put(url, data, config);
   }
 
   /**
    * PATCH 请求
    */
-  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  patch<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     return this.instance.patch(url, data, config);
   }
 
   /**
    * DELETE 请求
    */
-  delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>{
+  delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
     return this.instance.delete(url, config);
   }
 

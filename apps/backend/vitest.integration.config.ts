@@ -9,7 +9,7 @@ const TEST_DB_PATH = join(ROOT_DIR, 'test.db');
 
 /**
  * 集成测试配置
- * 
+ *
  * 【特点】
  * - 使用测试用 SQLite 数据库文件
  * - 不 Mock Prisma，使用真实的数据库操作
@@ -20,12 +20,16 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['src/**/*.integration.test.ts'],  // 只运行集成测试
+    include: ['src/**/*.integration.test.ts'], // 只运行集成测试
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       include: ['src/**/*.ts'],
-      exclude: ['src/**/*.test.ts', 'src/**/*.spec.ts', 'src/**/*.integration.test.ts'],
+      exclude: [
+        'src/**/*.test.ts',
+        'src/**/*.spec.ts',
+        'src/**/*.integration.test.ts',
+      ],
     },
     // 在任何代码运行前设置环境变量
     env: {

@@ -118,7 +118,9 @@ export class PlatformService {
       data: {
         ...(data.name && { name: data.name }),
         ...(data.icon !== undefined && { icon: data.icon }),
-        ...(data.description !== undefined && { description: data.description }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
         ...(data.enabled !== undefined && { enabled: data.enabled }),
         ...(data.adapterType && { adapterType: data.adapterType }),
         ...(data.config && { config: JSON.stringify(data.config) }),

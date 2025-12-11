@@ -29,9 +29,10 @@ export function useLogin() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (data: LoginPayload) => request.post<LoginResponse>('/auth/login', data),
+    mutationFn: (data: LoginPayload) =>
+      request.post<LoginResponse>('/auth/login', data),
     onSuccess: (data) => {
-      console.log("🚀 ~ useLogin ~ data:", data)
+      console.log('🚀 ~ useLogin ~ data:', data);
       // 登录成功，保存 token
       if (data?.token) {
         navigate('/');
@@ -44,7 +45,7 @@ export function useLogin() {
             email: user.email ?? '',
             role: user.role,
           },
-          data.token,
+          data.token
         );
       }
       // 清除登录状态查询缓存

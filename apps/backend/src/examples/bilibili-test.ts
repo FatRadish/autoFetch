@@ -14,7 +14,7 @@ async function testBilibiliAdapter() {
 
   // 获取 B站适配器
   const adapter = adapterRegistry.get('bilibili');
-  
+
   if (!adapter) {
     console.error('❌ B站适配器未注册');
     return;

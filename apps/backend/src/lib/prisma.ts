@@ -1,7 +1,7 @@
-import "dotenv/config";
+import 'dotenv/config';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaClient } from '../../generated/prisma/client';
 import logger from '../utils/logger.js';
 
@@ -26,11 +26,12 @@ const prisma = new PrismaClient({
     process.env.NODE_ENV === 'development'
       ? ['query', 'error', 'warn']
       : ['error'],
-  adapter
+  adapter,
 });
 
 // 连接事件监听
-prisma.$connect()
+prisma
+  .$connect()
   .then(() => {
     logger.info('Database connected successfully');
   })

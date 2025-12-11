@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 /**
  * React Query 全局错误处理 Hook
  * 在组件挂载时设置错误拦截器
- * 
+ *
  * 如果需要禁用某个请求的错误提示，在 useQuery 中设置：
  * meta: { hideErrorToast: true }
  */
@@ -16,7 +16,7 @@ export function useQueryErrorHandler(queryClient: QueryClient) {
       if (event.type === 'updated' && event.action?.type === 'error') {
         const error = event.action.error as Error | null;
         const hideErrorToast = (event.query?.meta as any)?.hideErrorToast;
-        
+
         if (error && !hideErrorToast) {
           toast.error(error.message || '请求失败，请稍后重试');
         }
@@ -37,7 +37,7 @@ export function useMutationErrorHandler(queryClient: QueryClient) {
       if (event.type === 'updated' && event.action?.type === 'error') {
         const error = event.action.error as Error | null;
         const hideErrorToast = (event.mutation?.meta as any)?.hideErrorToast;
-        
+
         if (error && !hideErrorToast) {
           toast.error(error.message || '操作失败，请稍后重试');
         }

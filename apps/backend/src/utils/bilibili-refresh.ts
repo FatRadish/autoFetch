@@ -61,8 +61,12 @@ function ensureLogger(logger?: LoggerFn): LoggerFn {
     return logger;
   }
   return (level, message, ...meta) => {
-    const metaString = meta.length ? ` ${meta.map((m) => JSON.stringify(m)).join(' ')}` : '';
-    console[level === 'error' ? 'error' : level](`[BilibiliRefresh] ${message}${metaString}`);
+    const metaString = meta.length
+      ? ` ${meta.map((m) => JSON.stringify(m)).join(' ')}`
+      : '';
+    console[level === 'error' ? 'error' : level](
+      `[BilibiliRefresh] ${message}${metaString}`
+    );
   };
 }
 
@@ -73,7 +77,9 @@ function toCookieArray(cookies: string | ParsedCookie[]): ParsedCookie[] {
   return cookies;
 }
 
-export function formatCookiesForHeader(cookies: string | ParsedCookie[]): string {
+export function formatCookiesForHeader(
+  cookies: string | ParsedCookie[]
+): string {
   if (typeof cookies === 'string') {
     if (!cookies.includes('\n') && !cookies.includes('\t')) {
       return cookies.trim();
@@ -81,10 +87,14 @@ export function formatCookiesForHeader(cookies: string | ParsedCookie[]): string
   }
 
   const cookieArray = toCookieArray(cookies);
-  return cookieArray.map((cookie) => `${cookie.name}=${cookie.value}`).join('; ');
+  return cookieArray
+    .map((cookie) => `${cookie.name}=${cookie.value}`)
+    .join('; ');
 }
 
-function parseCookiesFromSetCookie(headers: string | string[] | undefined): ParsedCookie[] {
+function parseCookiesFromSetCookie(
+  headers: string | string[] | undefined
+): ParsedCookie[] {
   if (!headers) {
     return [];
   }
@@ -138,7 +148,10 @@ export async function checkIfNeedsRefresh(
     if (response.data.code === 0) {
       const needsRefresh = response.data.data.refresh;
       const timestamp = response.data.data.timestamp;
-      log('info', `Cookie refresh check result: ${needsRefresh ? 'needs refresh' : 'no refresh'}`);
+      log(
+        'info',
+        `Cookie refresh check result: ${needsRefresh ? 'needs refresh' : 'no refresh'}`
+      );
       return { needsRefresh, timestamp };
     }
 
@@ -147,7 +160,10 @@ export async function checkIfNeedsRefresh(
       return { needsRefresh: false };
     }
 
-    log('warn', `Unexpected response when checking cookie status: ${response.data.message}`);
+    log(
+      'warn',
+      `Unexpected response when checking cookie status: ${response.data.message}`
+    );
     return { needsRefresh: false };
   } catch (error) {
     log('error', 'Failed to check cookie refresh status', error);
@@ -155,8 +171,13 @@ export async function checkIfNeedsRefresh(
   }
 }
 
-export async function generateCorrespondPath(timestamp: number): Promise<string> {
-  const publicKey = crypto.createPublicKey({ key: BILIBILI_PUBLIC_KEY, format: 'pem' });
+export async function generateCorrespondPath(
+  timestamp: number
+): Promise<string> {
+  const publicKey = crypto.createPublicKey({
+    key: BILIBILI_PUBLIC_KEY,
+    format: 'pem',
+  });
   const message = Buffer.from(`refresh_${timestamp}`);
 
   const encrypted = crypto.publicEncrypt(
@@ -179,13 +200,16 @@ export async function getRefreshCsrf(
   const log = ensureLogger(logger);
 
   try {
-    const response = await axios.get(`https://www.bilibili.com/correspond/1/${correspondPath}`, {
-      headers: {
-        Cookie: formatCookiesForHeader(cookies),
-        'User-Agent': DEFAULT_UA,
-      },
-      timeout: 10000,
-    });
+    const response = await axios.get(
+      `https://www.bilibili.com/correspond/1/${correspondPath}`,
+      {
+        headers: {
+          Cookie: formatCookiesForHeader(cookies),
+          'User-Agent': DEFAULT_UA,
+        },
+        timeout: 10000,
+      }
+    );
 
     const match = response.data?.match?.(/<div id="1-name">([^<]+)<\/div>/);
     if (match && match[1]) {
@@ -207,7 +231,12 @@ export async function refreshCookie(
   refreshCsrf: string,
   cookies: string | ParsedCookie[],
   logger?: LoggerFn
-): Promise<{ success: boolean; cookies?: ParsedCookie[]; newRefreshToken?: string; error?: string }> {
+): Promise<{
+  success: boolean;
+  cookies?: ParsedCookie[];
+  newRefreshToken?: string;
+  error?: string;
+}> {
   const log = ensureLogger(logger);
 
   try {
@@ -250,7 +279,10 @@ export async function refreshCookie(
     return { success: false, error: errorMsg };
   } catch (error) {
     log('error', 'Cookie refresh request failed', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
 
@@ -291,7 +323,10 @@ export async function confirmCookieRefresh(
       return true;
     }
 
-    log('warn', `Cookie refresh confirmation returned ${response.data.code}: ${response.data.message}`);
+    log(
+      'warn',
+      `Cookie refresh confirmation returned ${response.data.code}: ${response.data.message}`
+    );
     return false;
   } catch (error) {
     log('warn', 'Failed to confirm cookie refresh', error);
@@ -326,7 +361,11 @@ export async function performCookieRefresh(
   try {
     if (!refreshToken) {
       log('warn', 'No refresh token available, skipping cookie refresh');
-      return { success: false, refreshed: false, error: 'Missing refresh token' };
+      return {
+        success: false,
+        refreshed: false,
+        error: 'Missing refresh token',
+      };
     }
 
     let timestamp = Date.now();
@@ -347,10 +386,19 @@ export async function performCookieRefresh(
 
     const refreshCsrf = await getRefreshCsrf(correspondPath, cookies, log);
     if (!refreshCsrf) {
-      return { success: false, refreshed: false, error: 'Failed to obtain refresh_csrf' };
+      return {
+        success: false,
+        refreshed: false,
+        error: 'Failed to obtain refresh_csrf',
+      };
     }
 
-    const refreshResult = await refreshCookie(refreshToken, refreshCsrf, cookies, log);
+    const refreshResult = await refreshCookie(
+      refreshToken,
+      refreshCsrf,
+      cookies,
+      log
+    );
     if (!refreshResult.success || !refreshResult.cookies) {
       return {
         success: false,

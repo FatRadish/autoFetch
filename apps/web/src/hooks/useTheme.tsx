@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -18,7 +24,9 @@ const THEME_STORAGE_KEY = 'app-theme';
  */
 function getSystemTheme(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'light';
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
 }
 
 /**
@@ -48,9 +56,16 @@ interface ThemeProviderProps {
 /**
  * 主题 Provider
  */
-export function ThemeProvider({ children, defaultTheme = 'system' }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(() => getSavedTheme() || defaultTheme);
-  const [actualTheme, setActualTheme] = useState<'light' | 'dark'>(() => getActualTheme(theme));
+export function ThemeProvider({
+  children,
+  defaultTheme = 'system',
+}: ThemeProviderProps) {
+  const [theme, setThemeState] = useState<Theme>(
+    () => getSavedTheme() || defaultTheme
+  );
+  const [actualTheme, setActualTheme] = useState<'light' | 'dark'>(() =>
+    getActualTheme(theme)
+  );
 
   // 设置主题
   const setTheme = (newTheme: Theme) => {
@@ -97,7 +112,9 @@ export function ThemeProvider({ children, defaultTheme = 'system' }: ThemeProvid
   }, [theme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, actualTheme, setTheme, toggleTheme }}>
+    <ThemeContext.Provider
+      value={{ theme, actualTheme, setTheme, toggleTheme }}
+    >
       {children}
     </ThemeContext.Provider>
   );

@@ -18,7 +18,8 @@ export abstract class BasePlatformAdapter {
    * 统一的错误处理
    */
   protected handleError(error: unknown): ExecutionResult {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
 
     logger.error(`Platform adapter error [${this.name}]`, {
       error: errorMessage,
@@ -50,8 +51,13 @@ export abstract class BasePlatformAdapter {
   /**
    * 获取配置值
    */
-  protected getConfig<T>(context: ExecutionContext, key: string, defaultValue?: T): T {
-    const value = context.task.config[key] ?? context.platform.config[key] ?? defaultValue;
+  protected getConfig<T>(
+    context: ExecutionContext,
+    key: string,
+    defaultValue?: T
+  ): T {
+    const value =
+      context.task.config[key] ?? context.platform.config[key] ?? defaultValue;
     if (value === undefined) {
       throw new Error(`Config key "${key}" is required but not found`);
     }
@@ -61,7 +67,11 @@ export abstract class BasePlatformAdapter {
   /**
    * 日志辅助方法
    */
-  protected log(level: 'info' | 'warn' | 'error', message: string, data?: unknown): void {
+  protected log(
+    level: 'info' | 'warn' | 'error',
+    message: string,
+    data?: unknown
+  ): void {
     logger[level](`[${this.name}] ${message}`, data);
   }
 }
