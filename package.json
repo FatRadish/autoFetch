@@ -7,8 +7,10 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
     "format": "oxfmt .",
-    "format:check": "oxfmt --check ."
+    "format:check": "oxfmt --check .",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +20,18 @@
     "turbo": "^2.6.1"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "oxfmt": "^0.17.0",
     "oxlint": "^1.32.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "oxlint --fix",
+      "oxfmt --no-error-on-unmatched-pattern"
+    ],
+    "*.{json,md,yaml,yml,css,html}": [
+      "oxfmt --no-error-on-unmatched-pattern"
+    ]
   }
 }

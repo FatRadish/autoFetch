@@ -56,7 +56,7 @@ function isValidCron(expr: unknown): boolean {
   const fieldRegex = /^(\*|\d+|\d+-\d+)(\/\d+)?(,(\*|\d+|\d+-\d+)(\/\d+)?)*$/;
 
   // 允许一些额外的符号组合（例如在某些实现中支持的 L,W,#,?）
-  const extraRegex = /^[\*\d,\-\/\?LW#]+$/i;
+  const extraRegex = /^[*\d,\-/?LW#]+$/i;
 
   return parts.every((p) => fieldRegex.test(p) || extraRegex.test(p));
 }
