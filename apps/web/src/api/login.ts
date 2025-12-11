@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import request from '@/utils/request';
 import { useAuthStore } from '@/store/authStore';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export interface LoginPayload {
   username: string;
@@ -35,7 +36,7 @@ export function useLogin() {
       console.log('🚀 ~ useLogin ~ data:', data);
       // 登录成功，保存 token
       if (data?.token) {
-        navigate('/');
+        navigate('/dashboard');
         // 同步状态到 auth store
         const user = data.user;
         loginStore(
@@ -81,7 +82,7 @@ export function useCurrentUser() {
 /**
  * 登出 Hook
  */
-export function useLogout() {
+export function useLogout(message?: string) {
   const queryClient = useQueryClient();
   const logoutStore = useAuthStore((state) => state.logout);
 
@@ -92,6 +93,7 @@ export function useLogout() {
     },
     onSuccess: () => {
       // 登出成功，清空 token
+      toast.success(message ?? '已退出登录');
       localStorage.removeItem('token');
       logoutStore();
       // 清除所有认证相关的查询缓

@@ -24,6 +24,7 @@
     "login": "Login",
     "logging_in": "Logging in...",
     "logout": "Logout",
+    "settings": "Account Settings",
     "register": "Register",
     "username": "Username",
     "password": "Password",
@@ -82,5 +83,10 @@
     "notFound": "Resource not found",
     "timeout": "Request timeout, please retry",
     "unknown": "Unknown error"
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "tasks": "Task",
+    "accounts": "Platform Account"
   }
 }

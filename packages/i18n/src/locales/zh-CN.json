@@ -24,6 +24,7 @@
     "login": "登录",
     "logging_in": "登录中...",
     "logout": "退出登录",
+    "settings": "账号设置",
     "register": "注册",
     "username": "用户名",
     "password": "密码",
@@ -82,5 +83,10 @@
     "notFound": "资源不存在",
     "timeout": "请求超时，请重试",
     "unknown": "未知错误"
+  },
+  "menu": {
+    "dashboard": "仪表盘",
+    "tasks": "任务管理",
+    "accounts": "平台账号管理"
   }
 }

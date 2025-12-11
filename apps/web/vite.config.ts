@@ -11,4 +11,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    watch: {
+      usePolling: true, // 某些文件系统需要轮询模式
+    },
+    hmr: true,
+  },
 });

@@ -1,14 +1,13 @@
 import {
-  Calendar,
+  FileCheck,
   Home,
-  Inbox,
-  Search,
-  Settings,
   ChevronDown,
+  User2,
+  ChevronUp,
+  CircleUser,
 } from 'lucide-react';
-import { User2, ChevronUp } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
-
+import { useTranslation } from '@/lib/i18n.ts';
 import {
   Sidebar,
   SidebarContent,
@@ -19,7 +18,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarProvider,
 } from '@/components/ui/sidebar';
 
 import {
@@ -35,22 +33,27 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 
-const menuItems = [
-  {
-    groupLabel: 'Application',
-    children: [
-      { title: 'Dashboard', url: '#/dashboard', icon: Home },
-      { title: 'Tasks', url: '#/tasks', icon: Inbox },
-      { title: 'Calendar', url: '#/calendar', icon: Calendar },
-      { title: 'Search', url: '#/search', icon: Search },
-      { title: 'Settings', url: '#/settings', icon: Settings },
-    ],
-  },
-];
+import LoadingIcon from '@/components/ui/loading-icon';
+
+import { useAuthStore } from '@/store/authStore';
+import { useLogout } from '@/api/login.ts';
 
 export function AppSidebar() {
   const location = useLocation();
+  const { t } = useTranslation();
+  const { user } = useAuthStore();
+  const logOut = useLogout(t('auth.logoutSuccess'));
 
+  const menuItems = [
+    {
+      groupLabel: 'Application',
+      children: [
+        { title: t('menu.dashboard'), url: '#/dashboard', icon: Home },
+        { title: t('menu.accounts'), url: '#/accounts', icon: CircleUser },
+        { title: t('menu.tasks'), url: '#/tasks', icon: FileCheck },
+      ],
+    },
+  ];
   return (
     <Sidebar>
       <SidebarContent>
@@ -101,7 +104,7 @@ export function AppSidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> Username
+                  <User2 /> {user?.username}
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -110,13 +113,16 @@ export function AppSidebar() {
                 className="w-[--radix-popper-anchor-width]"
               >
                 <DropdownMenuItem>
-                  <span>Account</span>
+                  <span>{t('auth.settings')}</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Billing</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Sign out</span>
+                <DropdownMenuItem onClick={() => logOut.mutate()}>
+                  {logOut.isPending ? (
+                    <>
+                      <LoadingIcon /> <span>{t('auth.logout')}</span>
+                    </>
+                  ) : (
+                    <span>{t('auth.logout')}</span>
+                  )}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
