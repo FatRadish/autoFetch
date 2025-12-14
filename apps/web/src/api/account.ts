@@ -1,6 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import request from '@/utils/request';
-import { toast } from 'sonner';
 
 export interface CreateAccountPayload {
   cookies: string;

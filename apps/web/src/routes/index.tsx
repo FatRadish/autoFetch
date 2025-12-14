@@ -1,6 +1,7 @@
 import { createHashRouter } from 'react-router-dom';
-import MainLayout from '../layouts/MainLayout.tsx';
-import Dashboard from '../pages/Dashboard.tsx';
+import MainLayout from '@/layouts/MainLayout.tsx';
+import Dashboard from '@/pages/Dashboard.tsx';
+import Account from '@/pages/Account.tsx';
 import { ProtectedRoute } from './ProtectedRoute.tsx';
 
 export const router = createHashRouter([
@@ -21,6 +22,11 @@ export const router = createHashRouter([
         path: 'tasks',
         index: true,
         element: <Dashboard />,
+      },
+      {
+        path: 'accounts',
+        index: true,
+        element: <Account />,
       },
     ],
   },
