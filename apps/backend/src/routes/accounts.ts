@@ -16,8 +16,10 @@ router.get(
   authMiddleware,
   asyncHandler(async (req, res) => {
     const platformId = req.query.platformId as string | undefined;
+    const accountName = req.query.accountName as string | undefined;
     const accounts = await AccountService.getAll({
       platformId,
+      accountName,
       user: req.user!,
     });
 

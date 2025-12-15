@@ -9,7 +9,22 @@ import {
   TableFooter,
   TableCaption,
 } from '@/components/ui/table';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useTranslation } from '@/lib/i18n.ts';
+
+export type TableAction<T> = {
+  label: string;
+  onClick: (row: T) => void;
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost';
+  size?: 'sm' | 'default' | 'lg';
+  loading?: boolean;
+};
 
 export type Column<T> = {
   id?: string;
@@ -17,6 +32,7 @@ export type Column<T> = {
   accessor?: keyof T | ((row: T) => any);
   cell?: (row: T) => React.ReactNode;
   width?: string;
+  truncate?: boolean; // 默认使用省略以避免长内容撑破布局
   align?: 'left' | 'right' | 'center';
   sortable?: boolean;
 };
@@ -32,6 +48,8 @@ export interface MyTableProps<T> {
   caption?: React.ReactNode;
   noData?: React.ReactNode;
   className?: string;
+  actions?: TableAction<T>[];
+  actionsHeader?: string;
 }
 
 function getCellValue<T>(row: T, accessor?: keyof T | ((r: T) => any)) {
@@ -51,7 +69,10 @@ export function MyTable<T>({
   caption,
   noData = 'No data',
   className,
+  actions,
+  actionsHeader,
 }: MyTableProps<T>) {
+  const { t } = useTranslation();
   const [pageIndex, setPageIndex] = React.useState(0);
   const [sortBy, setSortBy] = React.useState<{
     id?: string;
@@ -133,12 +154,29 @@ export function MyTable<T>({
   };
 
   // Compute colSpan to avoid repetition
-  const colSpan = (selectable ? 1 : 0) + columns.length;
+  const colSpan =
+    (selectable ? 1 : 0) +
+    columns.length +
+    (actions && actions.length > 0 ? 1 : 0);
 
   return (
-    <div className={className}>
-      <Table>
+    <div
+      className={className ? `${className} overflow-x-auto` : 'overflow-x-auto'}
+    >
+      <Table style={{ tableLayout: 'fixed', width: '100%' }}>
         {caption ? <TableCaption>{caption}</TableCaption> : null}
+        <colgroup>
+          {selectable ? <col style={{ width: '3rem' }} /> : null}
+          {columns.map((col) => (
+            <col
+              key={col.id ?? String(col.header)}
+              style={col.width ? { width: col.width } : undefined}
+            />
+          ))}
+          {actions && actions.length > 0 ? (
+            <col style={{ width: '8rem' }} />
+          ) : null}
+        </colgroup>
         <TableHeader>
           <TableRow>
             {selectable ? (
@@ -156,7 +194,7 @@ export function MyTable<T>({
             {columns.map((col) => (
               <TableHead
                 key={col.id ?? String(col.header)}
-                className={`${col.align === 'right' ? 'text-right' : ''} ${col.sortable && col.id ? 'cursor-pointer' : ''}`}
+                className={`${col.align === 'right' ? 'text-right' : ''} ${col.sortable && col.id ? 'cursor-pointer' : ''} ${col.truncate !== false ? 'overflow-hidden text-ellipsis whitespace-nowrap' : ''}`}
                 onClick={() => toggleSort(col)}
                 style={{ width: col.width }}
               >
@@ -174,6 +212,11 @@ export function MyTable<T>({
                 </div>
               </TableHead>
             ))}
+            {actions && actions.length > 0 ? (
+              <TableHead className="text-right">
+                {actionsHeader ?? t('table.common.actions')}
+              </TableHead>
+            ) : null}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -199,16 +242,64 @@ export function MyTable<T>({
                     />
                   </TableCell>
                 ) : null}
-                {columns.map((col) => (
-                  <TableCell
-                    key={col.id ?? String(col.header)}
-                    className={col.align === 'right' ? 'text-right' : undefined}
-                  >
-                    {col.cell
-                      ? col.cell(row)
-                      : String(getCellValue(row, col.accessor) ?? '')}
+                {columns.map((col) => {
+                  const isTruncate = col.truncate !== false;
+                  const cellKey = col.id ?? String(col.header);
+                  if (col.cell) {
+                    return (
+                      <TableCell
+                        key={cellKey}
+                        className={
+                          col.align === 'right' ? 'text-right' : undefined
+                        }
+                      >
+                        {col.cell(row)}
+                      </TableCell>
+                    );
+                  }
+                  const rawValue = getCellValue(row, col.accessor);
+                  const textValue = rawValue == null ? '' : String(rawValue);
+                  const content = isTruncate ? (
+                    <span className="block overflow-hidden text-ellipsis whitespace-nowrap">
+                      {textValue}
+                    </span>
+                  ) : (
+                    textValue
+                  );
+
+                  return (
+                    <TableCell
+                      key={cellKey}
+                      className={
+                        col.align === 'right' ? 'text-right' : undefined
+                      }
+                    >
+                      {isTruncate && textValue ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>{content}</TooltipTrigger>
+                          <TooltipContent>{textValue}</TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        content
+                      )}
+                    </TableCell>
+                  );
+                })}
+                {actions && actions.length > 0 ? (
+                  <TableCell className="text-right space-x-2 flex justify-end gap-2">
+                    {actions.map((action) => (
+                      <Button
+                        key={action.label}
+                        variant={action.variant ?? 'outline'}
+                        size={action.size ?? 'sm'}
+                        onClick={() => action.onClick(row)}
+                        disabled={action.loading}
+                      >
+                        {action.loading ? t('common.loading') : action.label}
+                      </Button>
+                    ))}
                   </TableCell>
-                ))}
+                ) : null}
               </TableRow>
             ))
           )}

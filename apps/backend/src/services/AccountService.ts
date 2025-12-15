@@ -8,12 +8,18 @@ export class AccountService {
   /**
    * 获取所有账号
    */
-  static async getAll(data: { platformId?: string; user: JwtPayload }) {
-    const { platformId, user } = data;
+  static async getAll(data: {
+    platformId?: string;
+    accountName?: string;
+    user: JwtPayload;
+  }) {
+    const { platformId, accountName, user } = data;
     const accounts = await prisma.account.findMany({
-      where: platformId
-        ? { platformId, userId: user.userId }
-        : { userId: user.userId },
+      where: {
+        userId: user.userId,
+        ...(platformId ? { platformId } : {}),
+        ...(accountName ? { name: { contains: accountName } } : {}),
+      },
       include: {
         platform: {
           select: {

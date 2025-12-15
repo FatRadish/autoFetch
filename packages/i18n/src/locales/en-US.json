@@ -65,12 +65,12 @@
     "taskFailed": "Task execution failed"
   },
   "account": {
-    "title": "Account",
+    "accountName": "Account Name",
     "accountList": "Account List",
     "addAccount": "Add Account",
     "editAccount": "Edit Account",
     "deleteAccount": "Delete Account",
-    "platform": "Platform",
+    "platformName": "Platform Name",
     "credentials": "Credentials",
     "lastSync": "Last Sync",
     "syncNow": "Sync Now"
@@ -88,5 +88,24 @@
     "dashboard": "Dashboard",
     "tasks": "Task",
     "accounts": "Platform Account"
+  },
+  "table": {
+    "common": {
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "actions": "Actions"
+    }
+  },
+  "form": {
+    "btn": {
+      "add": "Add",
+      "edit": "Edit",
+      "delete": "Delete",
+      "search": "Search",
+      "reset": "Reset"
+    },
+    "account": {
+      "accountName": "filter by account name"
+    }
   }
 }

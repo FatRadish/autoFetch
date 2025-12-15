@@ -6,16 +6,16 @@ import { QueryClient } from '@tanstack/react-query';
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // 数据过期时间（5分钟）
-      staleTime: 5 * 60 * 1000,
-      // 缓存时间（10分钟）
-      gcTime: 10 * 60 * 1000,
+      // 数据过期时间（1分钟）
+      staleTime: 1 * 60 * 1000,
+      // 缓存时间（5分钟）
+      gcTime: 5 * 60 * 1000,
       // 失败后重试次数
       retry: 1,
       // 重试延迟
       retryDelay: 1000,
       // 窗口获得焦点时重新获取数据
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
       // 网络重连时重新获取数据
       refetchOnReconnect: true,
     },
