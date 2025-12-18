@@ -7,6 +7,26 @@ import { validate, schemas } from '../utils/validator.js';
 const router: RouterType = Router();
 
 /**
+ * GET /api/platforms/:id/tasks
+ * 获取指定平台下的所有任务模板
+ * @param platformId - 平台 ID
+ */
+router.get(
+  '/:id/tasks',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
+    const platformTasks = await PlatformService.getPlatformTasks(
+      req.params.id!
+    );
+
+    res.json({
+      success: true,
+      data: platformTasks,
+    });
+  })
+);
+
+/**
  * GET /api/platforms
  * 获取所有平台
  */

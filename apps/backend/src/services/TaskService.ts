@@ -1,15 +1,23 @@
 import prisma from '../lib/prisma.js';
-import { NotFoundError, ValidationError } from '../types/index.js';
+import { JwtPayload, NotFoundError, ValidationError } from '../types/index.js';
 import { scheduler } from '../scheduler/index.js';
 
 export class TaskService {
   /**
    * 获取所有任务
    */
-  static async getAll(data: { accountId: string }) {
-    const { accountId } = data;
+  static async getAll(data: {
+    accountId?: string;
+    taskName?: string;
+    user: JwtPayload;
+  }) {
+    const { accountId, taskName } = data;
     const tasks = await prisma.task.findMany({
-      where: { accountId },
+      where: {
+        userId: data.user.userId,
+        ...(accountId ? { accountId } : {}),
+        ...(taskName ? { name: { contains: taskName } } : {}),
+      },
       include: {
         account: {
           select: {
@@ -20,6 +28,13 @@ export class TaskService {
             proxy: true,
             userAgent: true,
             platformId: true,
+            platform: {
+              select: {
+                id: true,
+                name: true,
+                icon: true,
+              },
+            },
           },
         },
         platformTask: {
@@ -54,12 +69,19 @@ export class TaskService {
             proxy: true,
             userAgent: true,
             platformId: true,
+            platform: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
         platformTask: {
           select: {
             name: true,
             key: true,
+            id: true,
           },
         },
         _count: {
@@ -78,15 +100,18 @@ export class TaskService {
   /**
    * 创建任务
    */
-  static async create(data: {
-    accountId: string;
-    name: string;
-    schedule: string;
-    config?: Record<string, unknown>;
-    retryTimes?: number;
-    timeout?: number;
-    platformTaskId?: string;
-  }) {
+  static async create(
+    data: {
+      accountId: string;
+      name: string;
+      schedule: string;
+      config?: Record<string, unknown>;
+      retryTimes?: number;
+      timeout?: number;
+      platformTaskId?: string;
+    },
+    user: JwtPayload
+  ) {
     const account = await prisma.account.findUnique({
       where: { id: data.accountId },
     });
@@ -105,6 +130,7 @@ export class TaskService {
 
     const task = await prisma.task.create({
       data: {
+        userId: user.userId,
         accountId: data.accountId,
         name: data.name,
         schedule: data.schedule,

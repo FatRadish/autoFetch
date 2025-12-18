@@ -5,6 +5,32 @@ import { validateCookies } from '../utils/cookie.js';
 import config from '../config/index.js';
 import { type JwtPayload } from '../types/index.js';
 export class AccountService {
+  static async getByPlatformId(platformId: string, user: JwtPayload) {
+    const accounts = await prisma.account.findMany({
+      where: {
+        platformId,
+        userId: user.userId,
+      },
+      include: {
+        platform: {
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+          },
+        },
+        _count: {
+          select: { tasks: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    return accounts.map((account: (typeof accounts)[number]) => ({
+      id: account.id,
+      name: account.name,
+    }));
+  }
+
   /**
    * 获取所有账号
    */

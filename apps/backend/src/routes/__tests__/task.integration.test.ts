@@ -95,9 +95,9 @@ describe('Task Routes - Integration Tests', () => {
     await prisma.platform.deleteMany();
   });
 
-  describe('GET /api/tasks/:accountId', () => {
+  describe('GET /api/tasks/', () => {
     it('should return empty list when no tasks exist', async () => {
-      const response = await request(app).get(`/api/tasks/${testAccountId}`);
+      const response = await request(app).get(`/api/tasks`);
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual({
@@ -110,12 +110,14 @@ describe('Task Routes - Integration Tests', () => {
       await prisma.task.createMany({
         data: [
           {
+            userId: 'test_user_id',
             accountId: testAccountId,
             name: 'Task 1',
             schedule: '0 0 * * *',
             enabled: true,
           },
           {
+            userId: 'test_user_id',
             accountId: testAccountId,
             name: 'Task 2',
             schedule: '0 12 * * *',
@@ -124,7 +126,9 @@ describe('Task Routes - Integration Tests', () => {
         ],
       });
 
-      const response = await request(app).get(`/api/tasks/${testAccountId}`);
+      const response = await request(app).get(
+        `/api/tasks/?accountId=${testAccountId}`
+      );
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
@@ -149,6 +153,7 @@ describe('Task Routes - Integration Tests', () => {
 
       await prisma.task.create({
         data: {
+          userId: 'test_user_id',
           accountId: testAccountId,
           name: 'My Task',
           schedule: '0 0 * * *',
@@ -158,6 +163,7 @@ describe('Task Routes - Integration Tests', () => {
 
       await prisma.task.create({
         data: {
+          userId: 'test_user_id',
           accountId: otherAccount.id,
           name: 'Other Task',
           schedule: '0 0 * * *',
@@ -165,11 +171,77 @@ describe('Task Routes - Integration Tests', () => {
         },
       });
 
-      const response = await request(app).get(`/api/tasks/${testAccountId}`);
+      const response = await request(app).get(
+        `/api/tasks/?accountId=${testAccountId}`
+      );
 
       expect(response.status).toBe(200);
       expect(response.body.data).toHaveLength(1);
       expect(response.body.data[0].name).toBe('My Task');
+    });
+
+    it('should return user-specific tasks only', async () => {
+      await prisma.user.create({
+        data: {
+          id: 'other_user_id',
+          username: 'otheruser',
+          password: 'hashed_password',
+          role: 'user',
+        },
+      });
+
+      await prisma.task.create({
+        data: {
+          userId: 'test_user_id',
+          accountId: testAccountId,
+          name: 'My Task',
+          schedule: '0 0 * * *',
+          enabled: true,
+        },
+      });
+
+      await prisma.task.create({
+        data: {
+          userId: 'other_user_id',
+          accountId: testAccountId,
+          name: 'Other User Task',
+          schedule: '0 0 * * *',
+          enabled: true,
+        },
+      });
+
+      const response = await request(app).get(`/api/tasks`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data).toHaveLength(1);
+      expect(response.body.data[0].name).toBe('My Task');
+    });
+
+    it('should filter tasks by name', async () => {
+      await prisma.task.createMany({
+        data: [
+          {
+            userId: 'test_user_id',
+            accountId: testAccountId,
+            name: 'Morning Task',
+            schedule: '0 8 * * *',
+            enabled: true,
+          },
+          {
+            userId: 'test_user_id',
+            accountId: testAccountId,
+            name: 'Evening Task',
+            schedule: '0 20 * * *',
+            enabled: true,
+          },
+        ],
+      });
+
+      const response = await request(app).get(`/api/tasks/?taskName=Morning`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data).toHaveLength(1);
+      expect(response.body.data[0].name).toBe('Morning Task');
     });
   });
 
@@ -177,6 +249,7 @@ describe('Task Routes - Integration Tests', () => {
     it('should retrieve task by id', async () => {
       const task = await prisma.task.create({
         data: {
+          userId: 'test_user_id',
           accountId: testAccountId,
           name: 'Test Task',
           schedule: '0 0 * * *',
@@ -240,6 +313,7 @@ describe('Task Routes - Integration Tests', () => {
     it('should fail when task name is duplicate for same account', async () => {
       await prisma.task.create({
         data: {
+          userId: 'test_user_id',
           accountId: testAccountId,
           name: 'Duplicate Task',
           schedule: '0 0 * * *',
@@ -248,6 +322,7 @@ describe('Task Routes - Integration Tests', () => {
       });
 
       const response = await request(app).post('/api/tasks').send({
+        userId: 'test_user_id',
         accountId: testAccountId,
         name: 'Duplicate Task',
         schedule: '0 12 * * *',
@@ -280,6 +355,7 @@ describe('Task Routes - Integration Tests', () => {
     it('should update task successfully', async () => {
       const task = await prisma.task.create({
         data: {
+          userId: 'test_user_id',
           accountId: testAccountId,
           name: 'Original Task',
           schedule: '0 0 * * *',
@@ -318,6 +394,7 @@ describe('Task Routes - Integration Tests', () => {
     it('should allow partial updates', async () => {
       const task = await prisma.task.create({
         data: {
+          userId: 'test_user_id',
           accountId: testAccountId,
           name: 'Original Task',
           schedule: '0 0 * * *',
@@ -339,6 +416,7 @@ describe('Task Routes - Integration Tests', () => {
     it('should delete task successfully', async () => {
       const task = await prisma.task.create({
         data: {
+          userId: 'test_user_id',
           accountId: testAccountId,
           name: 'Task to Delete',
           schedule: '0 0 * * *',
@@ -368,6 +446,7 @@ describe('Task Routes - Integration Tests', () => {
     it('should cascade delete related platform tasks', async () => {
       const task = await prisma.task.create({
         data: {
+          userId: 'test_user_id',
           accountId: testAccountId,
           name: 'Task with Platform Tasks',
           schedule: '0 0 * * *',
@@ -399,6 +478,7 @@ describe('Task Routes - Integration Tests', () => {
     it('should manually trigger task execution', async () => {
       const task = await prisma.task.create({
         data: {
+          userId: 'test_user_id',
           accountId: testAccountId,
           name: 'Task to Run',
           schedule: '0 0 * * *',

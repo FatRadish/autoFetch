@@ -640,6 +640,7 @@ describe('Accounts Routes - Integration Tests', () => {
       // 创建一个关联的任务
       await prisma.task.create({
         data: {
+          userId: 'test_user_id',
           accountId: account.id,
           name: 'Associated Task',
           schedule: '0 0 * * *',

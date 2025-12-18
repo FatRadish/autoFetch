@@ -4,6 +4,29 @@ import { adapterRegistry } from '../adapters/registry.js';
 
 export class PlatformService {
   /**
+   * 获取指定平台下的所有任务模板
+   */
+  static async getPlatformTasks(platformId: string) {
+    const platform = await prisma.platform.findUnique({
+      where: { id: platformId },
+    });
+
+    if (!platform) {
+      throw new NotFoundError('Platform not found');
+    }
+
+    const tasks = await prisma.platformTask.findMany({
+      where: { platformId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return tasks.map((task) => ({
+      id: task.id,
+      name: task.name,
+    }));
+  }
+
+  /**
    * 获取所有平台
    */
   static async getAll(includeDisabled = false) {

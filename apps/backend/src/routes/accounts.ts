@@ -110,4 +110,23 @@ router.delete(
   })
 );
 
+/**
+ * 根据平台id获取账号
+ */
+router.get(
+  '/platform/:platformId',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
+    const accounts = await AccountService.getByPlatformId(
+      req.params.platformId!,
+      req.user!
+    );
+
+    res.json({
+      success: true,
+      data: accounts,
+    });
+  })
+);
+
 export default router;
