@@ -21,7 +21,9 @@ export const router = createHashRouter([
       {
         path: 'tasks',
         index: true,
-        element: <Dashboard />,
+        element: import('@/pages/Task.tsx').then((module) => (
+          <module.default />
+        )),
       },
       {
         path: 'accounts',

@@ -56,6 +56,23 @@ export function useGetAccountById(id: string) {
 }
 
 /**
+ * 根据平台id获取该平台下的所有账户
+ * @param platformId - 平台 ID
+ */
+export function useGetAccountsByPlatformId(platformId: string) {
+  return useQuery({
+    queryKey: ['accounts', 'byPlatform', platformId],
+    queryFn: () =>
+      request.get<ResPonseAccount[]>(`/accounts`, {
+        params: { platformId },
+      }),
+    enabled: !!platformId, // 只有 platformId 存在时才执行查询
+    meta: {
+      hideErrorToast: false,
+    },
+  });
+}
+/**
  * 创建新账户
  * @param payload - 账户创建数据
  */

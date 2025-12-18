@@ -39,7 +39,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n.ts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { set, z } from 'zod';
+import { z } from 'zod';
 
 export default function Account() {
   const [accountName, setAccountName] = useState('');
@@ -166,7 +166,11 @@ export default function Account() {
             aria-describedby={undefined}
             className="sm:max-w-4xl w-full"
           >
-            <DialogTitle>{t('account.addAccount')}</DialogTitle>
+            <DialogTitle>
+              {selectedAccountId
+                ? t('account.editAccount')
+                : t('account.addAccount')}
+            </DialogTitle>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -185,7 +189,9 @@ export default function Account() {
                             {...field}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <div className="min-h-5">
+                          <FormMessage />
+                        </div>
                       </FormItem>
                     )}
                   />
@@ -223,7 +229,9 @@ export default function Account() {
                             </SelectContent>
                           </Select>
                         </FormControl>
-                        <FormMessage />
+                        <div className="min-h-5">
+                          <FormMessage />
+                        </div>
                       </FormItem>
                     )}
                   />
@@ -236,7 +244,9 @@ export default function Account() {
                         <FormControl>
                           <Input placeholder="userAgent" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <div className="min-h-5">
+                          <FormMessage />
+                        </div>
                       </FormItem>
                     )}
                   />
@@ -265,7 +275,9 @@ export default function Account() {
                         <FormControl>
                           <Input placeholder="headers" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <div className="min-h-5">
+                          <FormMessage />
+                        </div>
                       </FormItem>
                     )}
                   />
@@ -278,7 +290,9 @@ export default function Account() {
                         <FormControl>
                           <Input placeholder="Cookies" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <div className="min-h-5">
+                          <FormMessage />
+                        </div>
                       </FormItem>
                     )}
                   />

@@ -9,15 +9,17 @@ import { scheduler } from '../scheduler/index.js';
 const router: RouterType = Router();
 
 /**
- * GET /api/tasks
+ * GET /api/tasks/:accountId
  * 获取当前账号下所有任务
  */
 router.get(
-  '/:accountId',
+  '/',
   authMiddleware,
   asyncHandler(async (req, res) => {
     const tasks = await TaskService.getAll({
-      accountId: req.params.accountId!,
+      accountId: req.query.accountId as string | undefined,
+      taskName: req.query.taskName as string | undefined,
+      user: req.user!,
     });
 
     res.json({
@@ -55,7 +57,7 @@ router.post(
   asyncHandler(async (req, res) => {
     const data = validate(schemas.createTask, req.body);
 
-    const task = await TaskService.create(data);
+    const task = await TaskService.create(data, req.user!);
 
     res.json({
       success: true,

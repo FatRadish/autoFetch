@@ -62,7 +62,43 @@
     "stopTask": "Stop Task",
     "taskRunning": "Task is running",
     "taskCompleted": "Task completed",
-    "taskFailed": "Task execution failed"
+    "taskFailed": "Task execution failed",
+    "nextRun": "Next Run Time",
+    "lastRun": "Last Run Time",
+    "cronExpression": "Cron Expression"
+  },
+  "cron": {
+    "title": "Execution Frequency",
+    "schedule": "Select Cron Expression",
+    "minute": "Every Minute",
+    "hour": "Every Hour",
+    "day": "Every Day",
+    "week": "Every Week",
+    "month": "Every Month",
+    "custom": "Custom",
+    "minuteLabel": "Minute",
+    "hourLabel": "Hour",
+    "dayLabel": "Day",
+    "weekDayLabel": "Day of Week",
+    "customLabel": "Custom Cron Expression",
+    "cronExpressionLabel": "Cron Expression",
+    "formatTip": "Format: minute hour day month week (e.g., 0 9 * * 1 means every Monday at 9 AM)",
+    "weekDays": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    },
+    "descriptions": {
+      "minute": "Execute every minute",
+      "hour": "Execute every hour at minute {{minute}}",
+      "day": "Execute every day at {{hour}}:{{minute}}",
+      "week": "Execute every {{weekDay}} at {{hour}}:{{minute}}",
+      "month": "Execute on day {{day}} of every month at {{hour}}:{{minute}}"
+    }
   },
   "account": {
     "accountName": "Account Name",
@@ -71,9 +107,7 @@
     "editAccount": "Edit Account",
     "deleteAccount": "Delete Account",
     "platformName": "Platform Name",
-    "credentials": "Credentials",
-    "lastSync": "Last Sync",
-    "syncNow": "Sync Now"
+    "platformTask": "Execute Task"
   },
   "error": {
     "networkError": "Network connection failed, please check your network",

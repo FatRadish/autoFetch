@@ -62,7 +62,43 @@
     "stopTask": "停止任务",
     "taskRunning": "任务运行中",
     "taskCompleted": "任务已完成",
-    "taskFailed": "任务执行失败"
+    "taskFailed": "任务执行失败",
+    "nextRun": "下次运行时间",
+    "lastRun": "上次运行时间",
+    "cronExpression": "Cron 表达式"
+  },
+  "cron": {
+    "title": "执行频率",
+    "schedule": "选择 Cron 表达式",
+    "minute": "每分钟",
+    "hour": "每小时",
+    "day": "每天",
+    "week": "每周",
+    "month": "每月",
+    "custom": "自定义",
+    "minuteLabel": "分钟",
+    "hourLabel": "小时",
+    "dayLabel": "日期",
+    "weekDayLabel": "星期",
+    "customLabel": "自定义 Cron 表达式",
+    "cronExpressionLabel": "Cron 表达式",
+    "formatTip": "格式: 分 时 日 月 周 (例如: 0 9 * * 1 表示每周一早上9点)",
+    "weekDays": {
+      "sunday": "星期日",
+      "monday": "星期一",
+      "tuesday": "星期二",
+      "wednesday": "星期三",
+      "thursday": "星期四",
+      "friday": "星期五",
+      "saturday": "星期六"
+    },
+    "descriptions": {
+      "minute": "每分钟执行一次",
+      "hour": "每小时的第 {{minute}} 分钟执行",
+      "day": "每天 {{hour}}:{{minute}} 执行",
+      "week": "每{{weekDay}} {{hour}}:{{minute}} 执行",
+      "month": "每月 {{day}} 日 {{hour}}:{{minute}} 执行"
+    }
   },
   "account": {
     "accountName": "账号名称",
@@ -70,7 +106,8 @@
     "addAccount": "添加账号",
     "editAccount": "编辑账号",
     "deleteAccount": "删除账号",
-    "platformName": "所属平台"
+    "platformName": "所属平台",
+    "platformTask": "执行任务"
   },
   "error": {
     "networkError": "网络连接失败，请检查网络",
