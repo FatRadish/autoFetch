@@ -149,6 +149,7 @@ export const schemas = {
   }),
 
   updateTask: z.object({
+    accountId: z.string().cuid().optional(),
     name: z.string().min(1).optional(),
     schedule: z
       .string()
@@ -161,6 +162,7 @@ export const schemas = {
     retryTimes: z.number().min(0).max(10).optional(),
     timeout: z.number().min(1000).max(300000).optional(),
     config: z.record(z.string(), z.unknown()).optional(),
+    platformTaskId: z.string().cuid().optional(),
   }),
 
   // 分页查询

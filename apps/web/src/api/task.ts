@@ -51,6 +51,7 @@ export function useGetTaskById(id: string) {
     queryKey: ['tasks', 'detail', id],
     queryFn: () => request.get<ResPonseTask>(`/tasks/task/${id}`),
     enabled: !!id, // 只有 id 存在时才执行查询
+    gcTime: 0,
     meta: {
       hideErrorToast: false,
     },

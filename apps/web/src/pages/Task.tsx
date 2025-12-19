@@ -155,16 +155,25 @@ export default function Account() {
   useEffect(() => {
     const detailData = detailTask.data;
     if (!detailData || detailData.id !== selectedTaskId) return;
-    form.reset({
-      name: detailData.name,
-      platformTaskId: detailData.platformTaskId,
-      platformId: detailData.account.platformId,
-      accountId: detailData.accountId,
-      schedule: detailData.schedule,
-      id: detailData.id,
-    });
+
     setSelectedPlatformId(detailData.account.platformId);
-  }, [detailTask.data, selectedTaskId, form]);
+  }, [detailTask.data, selectedTaskId]);
+
+  useEffect(() => {
+    const detailData = detailTask.data;
+    if (!detailData || detailData.id !== selectedTaskId) return;
+    const reSetForm = async () => {
+      form.reset({
+        name: detailData.name,
+        platformTaskId: detailData.platformTaskId,
+        platformId: detailData.account.platformId,
+        accountId: detailData.accountId,
+        schedule: detailData.schedule,
+        id: detailData.id,
+      });
+    };
+    reSetForm();
+  }, [getAllAccounts.data, getPlatformTasks.data]);
 
   return (
     <div className="p-4">

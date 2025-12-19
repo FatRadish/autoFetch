@@ -153,6 +153,8 @@ export class TaskService {
   static async update(
     taskId: string,
     data: {
+      accountId?: string;
+      platformTaskId?: string;
       name?: string;
       schedule?: string;
       enabled?: boolean;
@@ -181,6 +183,8 @@ export class TaskService {
     const updated = await prisma.task.update({
       where: { id: taskId },
       data: {
+        accountId: data.accountId,
+        platformTaskId: data.platformTaskId,
         name: data.name,
         schedule: data.schedule,
         enabled: data.enabled,
