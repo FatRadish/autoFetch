@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import request from '@/utils/request';
-
+import { toast } from 'sonner';
+import type { ApiResponse } from '@/utils/types';
 export interface CreateTaskPayload {
   accountId: string;
   name: string;
@@ -116,6 +117,66 @@ export function useUpdateTask() {
     },
     meta: {
       hideErrorToast: false, // 显示错误提示
+    },
+  });
+}
+
+/**
+ * 手动触发任务执行
+ * @param id - 任务 ID
+ */
+export function useRunTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => request.post(`/tasks/${id}/run`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks', 'list'] });
+    },
+    meta: {
+      hideErrorToast: false,
+    },
+  });
+}
+
+/**
+ * 停止定时器
+ * @param id - 任务 ID
+ */
+export function useStopTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => request.post(`/tasks/${id}/stop`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks', 'list'] });
+    },
+    meta: {
+      hideErrorToast: false,
+    },
+    onMutate(variables, context) {
+      console.log('Stopping task with ID:', variables, context);
+    },
+  });
+}
+
+/**
+ * 获取调度器状态
+ * @param id - 任务 ID
+ * @return 调度器状态信息
+ */
+export function useSchedulerTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => request.post(`/tasks/${id}/schedule`),
+    onSuccess: (data: ApiResponse, test, result) => {
+      console.log('🚀 ~ useSchedulerTask ~ data:', result, test);
+      // toast.success(data.message || '任务已开始调度');
+      queryClient.invalidateQueries({ queryKey: ['tasks', 'list'] });
+    },
+    meta: {
+      hideErrorToast: false,
     },
   });
 }

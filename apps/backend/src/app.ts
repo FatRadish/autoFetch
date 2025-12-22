@@ -90,23 +90,30 @@ const server = app.listen(config.server.port, config.server.host, async () => {
   await scheduler.init();
 });
 
-// 优雅关闭
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM signal received: closing HTTP server');
-  scheduler.stop();
-  server.close(() => {
-    logger.info('HTTP server closed');
-    process.exit(0);
-  });
-});
+let isShuttingDown = false;
+const shutdown = (reason: string, err?: unknown) => {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+  if (err) logger.error(`${reason}:`, err);
 
-process.on('SIGINT', () => {
-  logger.info('SIGINT signal received: closing HTTP server');
-  scheduler.stop();
+  try {
+    scheduler.stop();
+  } catch (e) {
+    logger.error('scheduler stop failed:', e);
+  }
+
   server.close(() => {
-    logger.info('HTTP server closed');
-    process.exit(0);
+    logger.info(`HTTP server closed (${reason})`);
+    process.exit(err ? 1 : 0);
   });
-});
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGQUIT', () => shutdown('SIGQUIT'));
+process.on('uncaughtException', (err) => shutdown('uncaughtException', err));
+process.on('unhandledRejection', (reason) =>
+  shutdown('unhandledRejection', reason as any)
+);
 
 export default app;

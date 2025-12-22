@@ -137,4 +137,38 @@ router.get(
   })
 );
 
+/**
+ * POST /api/tasks/:id/stop
+ * 手动停止任务
+ */
+router.post(
+  '/:id/stop',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
+    scheduler.cancel(req.params.id!);
+
+    res.json({
+      success: true,
+      message: '任务已停止',
+    });
+  })
+);
+
+/**
+ * POST /api/tasks/:id/stop
+ * 手动开始调度任务
+ */
+router.post(
+  '/:id/schedule',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
+    const task = await TaskService.schedule(req.params.id!);
+
+    res.json({
+      success: true,
+      message: `任务${task.name}已开始调度，Cron: ${task.schedule}`,
+    });
+  })
+);
+
 export default router;

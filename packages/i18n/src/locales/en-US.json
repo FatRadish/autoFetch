@@ -65,7 +65,9 @@
     "taskFailed": "Task execution failed",
     "nextRun": "Next Run Time",
     "lastRun": "Last Run Time",
-    "cronExpression": "Cron Expression"
+    "cronExpression": "Cron Expression",
+    "log": "Task Log",
+    "runTaskNow": "Run Task Now"
   },
   "cron": {
     "title": "Execution Frequency",
@@ -127,7 +129,8 @@
     "common": {
       "createdAt": "Created At",
       "updatedAt": "Updated At",
-      "actions": "Actions"
+      "actions": "Actions",
+      "otherBtn": "Other"
     }
   },
   "form": {

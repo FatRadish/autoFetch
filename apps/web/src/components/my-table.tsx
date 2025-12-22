@@ -24,6 +24,7 @@ export type TableAction<T> = {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost';
   size?: 'sm' | 'default' | 'lg';
   loading?: boolean;
+  component?: (row: T) => React.ReactNode;
 };
 
 export type Column<T> = {
@@ -50,6 +51,7 @@ export interface MyTableProps<T> {
   className?: string;
   actions?: TableAction<T>[];
   actionsHeader?: string;
+  actionWidth?: string;
 }
 
 function getCellValue<T>(row: T, accessor?: keyof T | ((r: T) => any)) {
@@ -62,7 +64,7 @@ export function MyTable<T>({
   columns,
   data,
   pageSize = 10,
-  pagination = true,
+  pagination = false,
   selectable = false,
   onSelectionChange,
   getRowKey,
@@ -71,6 +73,7 @@ export function MyTable<T>({
   className,
   actions,
   actionsHeader,
+  actionWidth,
 }: MyTableProps<T>) {
   const { t } = useTranslation();
   const [pageIndex, setPageIndex] = React.useState(0);
@@ -173,9 +176,7 @@ export function MyTable<T>({
               style={col.width ? { width: col.width } : undefined}
             />
           ))}
-          {actions && actions.length > 0 ? (
-            <col style={{ width: '8rem' }} />
-          ) : null}
+          {actions && actions.length > 0 ? <col /> : null}
         </colgroup>
         <TableHeader>
           <TableRow>
@@ -213,7 +214,7 @@ export function MyTable<T>({
               </TableHead>
             ))}
             {actions && actions.length > 0 ? (
-              <TableHead className="text-right">
+              <TableHead className="text-left" style={{ width: actionWidth }}>
                 {actionsHeader ?? t('table.common.actions')}
               </TableHead>
             ) : null}
@@ -286,18 +287,23 @@ export function MyTable<T>({
                   );
                 })}
                 {actions && actions.length > 0 ? (
-                  <TableCell className="text-right space-x-2 flex justify-end gap-2">
-                    {actions.map((action) => (
-                      <Button
-                        key={action.label}
-                        variant={action.variant ?? 'outline'}
-                        size={action.size ?? 'sm'}
-                        onClick={() => action.onClick(row)}
-                        disabled={action.loading}
-                      >
-                        {action.loading ? t('common.loading') : action.label}
-                      </Button>
-                    ))}
+                  <TableCell className="text-left space-x-2 flex justify-start gap-2">
+                    {actions.map((action) => {
+                      if (action.component) {
+                        return action.component(row);
+                      }
+                      return (
+                        <Button
+                          key={action.label}
+                          variant={action.variant ?? 'outline'}
+                          size={action.size ?? 'sm'}
+                          onClick={() => action.onClick(row)}
+                          disabled={action.loading}
+                        >
+                          {action.loading ? t('common.loading') : action.label}
+                        </Button>
+                      );
+                    })}
                   </TableCell>
                 ) : null}
               </TableRow>

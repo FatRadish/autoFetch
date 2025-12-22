@@ -4,6 +4,22 @@ import { scheduler } from '../scheduler/index.js';
 
 export class TaskService {
   /**
+   * 手动开始调度任务
+   */
+  static async schedule(taskId: string) {
+    const task = await prisma.task.findUnique({
+      where: { id: taskId },
+    });
+
+    if (!task) {
+      throw new NotFoundError('Task not found');
+    }
+
+    scheduler.schedule(task.id, task.schedule);
+    return task;
+  }
+
+  /**
    * 获取所有任务
    */
   static async getAll(data: {

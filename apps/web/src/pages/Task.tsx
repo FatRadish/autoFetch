@@ -5,6 +5,9 @@ import {
   useDeleteTask,
   useGetTaskById,
   useUpdateTask,
+  useRunTask,
+  useStopTask,
+  useSchedulerTask,
 } from '@/api/task';
 import { useGetAllPlatforms, useGetPlatformTasks } from '@/api/platforms';
 import { useGetAccountsByPlatformId } from '@/api/account';
@@ -40,6 +43,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { CronPicker } from '@/components/cron-picker';
 import { useEffect, useState } from 'react';
@@ -47,6 +58,7 @@ import { useTranslation } from '@/lib/i18n.ts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { MoreHorizontal } from 'lucide-react';
 
 export default function Account() {
   const [taskName, setTaskName] = useState('');
@@ -61,7 +73,9 @@ export default function Account() {
   const updateTask = useUpdateTask();
   const getPlatformTasks = useGetPlatformTasks(selectedPlatformId);
   const detailTask = useGetTaskById(selectedTaskId);
-
+  const runTask = useRunTask();
+  const stopTask = useStopTask();
+  const schedulerTask = useSchedulerTask();
   const { t } = useTranslation();
 
   const columns: Column<ResPonseTask>[] = [
@@ -173,7 +187,12 @@ export default function Account() {
       });
     };
     reSetForm();
-  }, [getAllAccounts.data, getPlatformTasks.data]);
+  }, [
+    getAllAccounts.data,
+    getPlatformTasks.data,
+    detailTask.data,
+    selectedTaskId,
+  ]);
 
   return (
     <div className="p-4">
@@ -391,21 +410,51 @@ export default function Account() {
         columns={columns}
         data={getAllTasks.data ?? []}
         pageSize={8}
-        pagination
+        pagination={false}
         actions={[
-          {
-            label: t('form.btn.edit'),
-            onClick: (row) => editColumns(row),
-            variant: 'outline',
-            size: 'sm',
-            loading: false,
-          },
           {
             label: t('form.btn.delete'),
             onClick: (row) => deleteTask.mutate(row.id),
             variant: 'destructive',
             size: 'sm',
             loading: deleteTask.isPending,
+          },
+          {
+            label: t('table.common.otherBtn'),
+            onClick: (row) => deleteTask.mutate(row.id),
+            size: 'sm',
+            loading: deleteTask.isPending,
+            component: (row) => {
+              return (
+                <DropdownMenu key={t('table.common.otherBtn') + row.id}>
+                  <DropdownMenuTrigger>
+                    {/* <div> {t('table.common.otherBtn')}</div> */}
+                    <MoreHorizontal />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>
+                      {t('table.common.otherBtn')}
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => editColumns(row)}>
+                      {t('form.btn.edit')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => runTask.mutate(row.id)}>
+                      {t('task.runTaskNow')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => schedulerTask.mutate(row.id)}
+                    >
+                      {t('task.runTask')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => stopTask.mutate(row.id)}>
+                      {t('task.stopTask')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>{t('task.log')}</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+            },
           },
         ]}
       />

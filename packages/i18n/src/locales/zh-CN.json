@@ -65,7 +65,9 @@
     "taskFailed": "任务执行失败",
     "nextRun": "下次运行时间",
     "lastRun": "上次运行时间",
-    "cronExpression": "Cron 表达式"
+    "cronExpression": "Cron 表达式",
+    "log": "任务日志",
+    "runTaskNow": "立即运行任务"
   },
   "cron": {
     "title": "执行频率",
@@ -127,7 +129,8 @@
     "common": {
       "createdAt": "创建时间",
       "updatedAt": "更新时间",
-      "actions": "操作"
+      "actions": "操作",
+      "otherBtn": "其他"
     }
   },
   "form": {
