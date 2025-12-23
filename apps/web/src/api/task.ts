@@ -148,7 +148,8 @@ export function useStopTask() {
 
   return useMutation({
     mutationFn: (id: string) => request.post(`/tasks/${id}/stop`),
-    onSuccess: () => {
+    onSuccess: (data: ApiResponse) => {
+      toast.success(data?.message || '任务调度成功');
       queryClient.invalidateQueries({ queryKey: ['tasks', 'list'] });
     },
     meta: {
@@ -161,18 +162,17 @@ export function useStopTask() {
 }
 
 /**
- * 获取调度器状态
+ * 开启调度器
  * @param id - 任务 ID
- * @return 调度器状态信息
+ * @return 调度器信息
  */
 export function useSchedulerTask() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (id: string) => request.post(`/tasks/${id}/schedule`),
-    onSuccess: (data: ApiResponse, test, result) => {
-      console.log('🚀 ~ useSchedulerTask ~ data:', result, test);
-      // toast.success(data.message || '任务已开始调度');
+    onSuccess: (data: ApiResponse) => {
+      toast.success(data?.message || '任务调度成功');
       queryClient.invalidateQueries({ queryKey: ['tasks', 'list'] });
     },
     meta: {

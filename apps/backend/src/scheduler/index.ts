@@ -211,7 +211,7 @@ class Scheduler {
   /**
    * 调度单个任务
    */
-  schedule(taskId: string, cronExpr: string): void {
+  async schedule(taskId: string, cronExpr: string): Promise<void> {
     // 先取消旧的调度
     this.cancel(taskId);
 
@@ -221,6 +221,12 @@ class Scheduler {
       });
 
       this.jobs.set(taskId, job);
+      await prisma.task.update({
+        where: { id: taskId },
+        data: {
+          nextRunAt: this.getNextRun(taskId),
+        },
+      });
       logger.info(
         `[Scheduler] Scheduled task ${taskId} with cron: ${cronExpr}`
       );

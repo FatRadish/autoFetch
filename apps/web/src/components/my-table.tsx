@@ -36,6 +36,7 @@ export type Column<T> = {
   truncate?: boolean; // 默认使用省略以避免长内容撑破布局
   align?: 'left' | 'right' | 'center';
   sortable?: boolean;
+  component?: (row: T) => React.ReactNode;
 };
 
 export interface MyTableProps<T> {
@@ -92,6 +93,7 @@ export function MyTable<T>({
   );
 
   React.useEffect(() => {
+    console.log('🚀 ~ MyTable ~ data:', data);
     if (onSelectionChange) {
       const selectedRows: T[] = [];
       data.forEach((row, idx) => {
@@ -246,6 +248,18 @@ export function MyTable<T>({
                 {columns.map((col) => {
                   const isTruncate = col.truncate !== false;
                   const cellKey = col.id ?? String(col.header);
+                  if (col.component) {
+                    return (
+                      <TableCell
+                        key={cellKey}
+                        className={
+                          col.align === 'right' ? 'text-right' : undefined
+                        }
+                      >
+                        {col.component(row)}
+                      </TableCell>
+                    );
+                  }
                   if (col.cell) {
                     return (
                       <TableCell
@@ -321,7 +335,7 @@ export function MyTable<T>({
                   <div className="flex items-center gap-2">
                     <button
                       aria-label="Previous page"
-                      className="btn-ghost h-8 w-8"
+                      className="btn-ghost h-8 w-8 cursor-pointer"
                       onClick={() => setPageIndex((p) => Math.max(0, p - 1))}
                       disabled={pageIndex === 0}
                     >
@@ -329,7 +343,7 @@ export function MyTable<T>({
                     </button>
                     <button
                       aria-label="Next page"
-                      className="btn-ghost h-8 w-8"
+                      className="btn-ghost h-8 w-8 cursor-pointer"
                       onClick={() =>
                         setPageIndex((p) => Math.min(totalPages - 1, p + 1))
                       }

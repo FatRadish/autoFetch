@@ -111,6 +111,12 @@
     "platformName": "Platform Name",
     "platformTask": "Execute Task"
   },
+  "log": {
+    "message": "Log Message",
+    "status": "Status",
+    "startTime": "Start Time",
+    "endTime": "End Time"
+  },
   "error": {
     "networkError": "Network connection failed, please check your network",
     "serverError": "Server error, please try again later",

@@ -59,10 +59,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { MoreHorizontal } from 'lucide-react';
+import Log from '@/pages/Log';
 
 export default function Account() {
   const [taskName, setTaskName] = useState('');
   const [open, setOpen] = useState(false);
+  const [logDialog, setLogDialog] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState('');
   const [selectedPlatformId, setSelectedPlatformId] = useState('');
   const getAllTasks = useGetAllTasks({ taskName });
@@ -164,6 +166,16 @@ export default function Account() {
       id: undefined,
     });
     setOpen(true);
+  };
+
+  const openLogDialog = (taskId: string) => {
+    setSelectedTaskId(taskId);
+    setLogDialog(true);
+  };
+
+  const handelLogDiaLogChange = (nextOpen: boolean) => {
+    setLogDialog(nextOpen);
+    if (!nextOpen) setSelectedTaskId('');
   };
 
   useEffect(() => {
@@ -406,10 +418,18 @@ export default function Account() {
           </DialogContent>
         </Dialog>
       </div>
+      <Dialog open={logDialog} onOpenChange={handelLogDiaLogChange}>
+        <DialogContent
+          aria-describedby={undefined}
+          className="sm:max-w-4xl w-full"
+        >
+          <DialogTitle>{t('task.log')}</DialogTitle>
+          {selectedTaskId ? <Log taskId={selectedTaskId} /> : null}
+        </DialogContent>
+      </Dialog>
       <MyTable<ResPonseTask>
         columns={columns}
         data={getAllTasks.data ?? []}
-        pageSize={8}
         pagination={false}
         actions={[
           {
@@ -428,7 +448,6 @@ export default function Account() {
               return (
                 <DropdownMenu key={t('table.common.otherBtn') + row.id}>
                   <DropdownMenuTrigger>
-                    {/* <div> {t('table.common.otherBtn')}</div> */}
                     <MoreHorizontal />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
@@ -450,7 +469,9 @@ export default function Account() {
                     <DropdownMenuItem onClick={() => stopTask.mutate(row.id)}>
                       {t('task.stopTask')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem>{t('task.log')}</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => openLogDialog(row.id)}>
+                      {t('task.log')}
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               );

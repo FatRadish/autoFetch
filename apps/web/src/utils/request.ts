@@ -52,7 +52,7 @@ class Request {
 
         // 业务逻辑成功，直接返回数据
         if (data.success) {
-          return data.data;
+          return data.data || data;
         }
 
         // 业务逻辑失败，抛出错误让 React Query 捕获

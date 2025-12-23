@@ -111,6 +111,12 @@
     "platformName": "所属平台",
     "platformTask": "执行任务"
   },
+  "log": {
+    "message": "日志信息",
+    "status": "状态",
+    "startTime": "开始时间",
+    "endTime": "结束时间"
+  },
   "error": {
     "networkError": "网络连接失败，请检查网络",
     "serverError": "服务器错误，请稍后重试",
