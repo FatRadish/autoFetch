@@ -10,6 +10,7 @@ export interface CreateAccountPayload {
   proxy?: string;
   userAgent: string;
   userId?: string;
+  refreshToken?: string;
 }
 
 export interface ResPonsePlatForm {

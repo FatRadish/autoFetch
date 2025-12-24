@@ -110,7 +110,7 @@ export const schemas = {
         password: z.string().optional(),
       })
       .optional(),
-    refreshToken: z.string().min(1).optional(),
+    refreshToken: z.string().optional(),
   }),
 
   updateAccount: z.object({

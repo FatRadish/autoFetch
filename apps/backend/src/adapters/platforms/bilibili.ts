@@ -56,20 +56,15 @@ export class BilibiliAdapter extends BrowserAdapter {
           'No refresh token provided; automatic cookie refresh skipped'
         );
       }
+      const checkInUrl = 'https://www.bilibili.com';
 
       // 初始化浏览器（使用非 headless 模式避免反爬虫检测）
       this.page = await this.initBrowser(context, {
         headless: false,
-        baseUrl: 'https://www.bilibili.com',
+        baseUrl: checkInUrl,
       });
 
       // 获取配置
-      // const checkInUrl = this.getConfig<string>(
-      //   context,
-      //   'checkInUrl',
-      //   'https://www.bilibili.com'
-      // );
-      const checkInUrl = 'https://www.bilibili.com';
 
       // 访问 B站首页
       this.log('info', 'Navigating to Bilibili homepage');
@@ -158,9 +153,6 @@ export class BilibiliAdapter extends BrowserAdapter {
         await this.screenshot('./debug-empty-page.png');
         return false;
       }
-
-      // 截图用于调试
-      await this.screenshot('./debug-login-check.png');
 
       // 尝试多种方式检查登录状态
       const loginStatus = await page.evaluate(() => {

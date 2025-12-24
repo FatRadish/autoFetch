@@ -75,6 +75,7 @@ export default function Account() {
     cookies: z.string().min(1, t('validation.required')),
     userAgent: z.string().min(1, t('validation.required')),
     headers: z.string().optional(),
+    refreshToken: z.string().optional(),
     id: z.string().optional(),
   });
 
@@ -89,6 +90,7 @@ export default function Account() {
       cookies: '',
       userAgent: '',
       headers: '',
+      refreshToken: '',
     },
   });
 
@@ -130,6 +132,7 @@ export default function Account() {
       userAgent: '',
       headers: '',
       id: undefined,
+      refreshToken: '',
     });
     setOpen(true);
   };
@@ -141,6 +144,7 @@ export default function Account() {
       platformId: detailData.platform.id,
       cookies: detailData.cookies,
       userAgent: detailData.userAgent,
+      refreshToken: detailData.refreshToken,
       headers:
         typeof detailData.headers === 'string'
           ? detailData.headers
@@ -289,6 +293,21 @@ export default function Account() {
                         <FormLabel>Cookies</FormLabel>
                         <FormControl>
                           <Input placeholder="Cookies" {...field} />
+                        </FormControl>
+                        <div className="min-h-5">
+                          <FormMessage />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="refreshToken"
+                    render={({ field }) => (
+                      <FormItem className="md:col-span-2">
+                        <FormLabel>Refresh Token</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Refresh Token" {...field} />
                         </FormControl>
                         <div className="min-h-5">
                           <FormMessage />

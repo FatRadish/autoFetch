@@ -5,6 +5,7 @@
     "rootDir": ".",
     "module": "esnext",
     "target": "es2016",
+    "lib": ["ES2022", "DOM"],
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
