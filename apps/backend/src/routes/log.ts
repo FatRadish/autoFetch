@@ -1,5 +1,5 @@
 import { Router, type Router as RouterType } from 'express';
-import { LogsService } from '../services/LogsService';
+import { LogsService } from '../services/LogsService.js';
 import { asyncHandler } from '../middleware/error.js';
 import { authMiddleware } from '../middleware/auth.js';
 

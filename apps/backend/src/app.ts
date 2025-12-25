@@ -7,7 +7,6 @@ import config from './config/index.js';
 import logger from './utils/logger.js';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
 import { apiLimiter } from './middleware/ratelimit.js';
-import seed from '../prisma/seed.js';
 import { scheduler } from './scheduler/index.js';
 import { jsonDateReplacer } from './utils/date.js';
 
@@ -88,7 +87,12 @@ const server = app.listen(config.server.port, config.server.host, async () => {
   );
   logger.info(`Environment: ${config.server.env}`);
 
-  await seed();
+  try {
+    const { default: seed } = await import('../prisma/seed.js');
+    await seed();
+  } catch (error) {
+    logger.warn('Seed function not available or failed:', error);
+  }
   await scheduler.init();
 });
 

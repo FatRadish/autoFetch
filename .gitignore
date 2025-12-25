@@ -45,3 +45,10 @@ claude.md
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Nginx SSL certificates
+nginx/ssl/*.pem
+nginx/ssl/*.key
+nginx/ssl/*.crt
+!nginx/ssl/README.md
+!nginx/ssl/.gitkeep
