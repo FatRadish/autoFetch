@@ -1,6 +1,6 @@
-import prisma from '../src/lib/prisma';
+import prisma from '../src/lib/prisma.js';
 import bcrypt from 'bcryptjs';
-import logger from '@/utils/logger';
+import logger from '../src/utils/logger.js';
 
 export default async function seed() {
   try {

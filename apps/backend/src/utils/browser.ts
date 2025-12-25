@@ -15,7 +15,10 @@ class BrowserManager {
    * 获取浏览器实例
    */
   async getBrowser(options: { headless?: boolean } = {}): Promise<Browser> {
-    const { headless = true } = options;
+    // 在生产环境或 Docker 环境中强制使用 headless 模式
+    const isProduction = process.env.NODE_ENV === 'production';
+    const forceHeadless = isProduction || !!process.env.CHROMIUM_PATH;
+    const headless = forceHeadless ? true : (options.headless ?? true);
 
     // 如果浏览器已存在且连接正常，直接返回
     if (this.browser && this.browser.isConnected()) {
@@ -25,9 +28,11 @@ class BrowserManager {
     }
 
     // 启动新的浏览器实例
-    logger.info('[BrowserManager] Launching new browser instance');
+    logger.info(
+      `[BrowserManager] Launching new browser instance (headless: ${headless})`
+    );
 
-    this.browser = await chromium.launch({
+    const launchOptions: any = {
       headless,
       args: [
         '--no-sandbox',
@@ -35,7 +40,17 @@ class BrowserManager {
         '--disable-dev-shm-usage',
         '--disable-blink-features=AutomationControlled',
       ],
-    });
+    };
+
+    // 如果设置了 CHROMIUM_PATH 环境变量，使用指定路径（Docker 环境）
+    if (process.env.CHROMIUM_PATH) {
+      launchOptions.executablePath = process.env.CHROMIUM_PATH;
+      logger.info(
+        `[BrowserManager] Using custom chromium path: ${process.env.CHROMIUM_PATH}`
+      );
+    }
+
+    this.browser = await chromium.launch(launchOptions);
 
     this.lastUsedAt = Date.now();
 
