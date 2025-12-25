@@ -150,5 +150,8 @@
     "account": {
       "accountName": "filter by account name"
     }
+  },
+  "questions": {
+    "hoverRefreshToken": "The refresh token is used to obtain a new access token to maintain the validity of the session and avoid frequent logins. (localStorage's ac_time_value)"
   }
 }

@@ -150,5 +150,8 @@
     "account": {
       "accountName": "请输入账号名称"
     }
+  },
+  "questions": {
+    "hoverRefreshToken": "刷新令牌用于获取新的访问令牌，以保持会话的有效性，避免频繁登录。(localStorage 的 ac_time_value)"
   }
 }

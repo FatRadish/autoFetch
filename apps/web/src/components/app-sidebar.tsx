@@ -48,7 +48,7 @@ export function AppSidebar() {
     {
       groupLabel: 'Application',
       children: [
-        { title: t('menu.dashboard'), url: '#/dashboard', icon: Home },
+        // { title: t('menu.dashboard'), url: '#/dashboard', icon: Home },
         { title: t('menu.accounts'), url: '#/accounts', icon: CircleUser },
         { title: t('menu.tasks'), url: '#/tasks', icon: FileCheck },
       ],

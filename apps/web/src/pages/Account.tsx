@@ -40,6 +40,12 @@ import { useTranslation } from '@/lib/i18n.ts';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card';
+import { CircleQuestionMark } from 'lucide-react';
 
 export default function Account() {
   const [accountName, setAccountName] = useState('');
@@ -305,7 +311,19 @@ export default function Account() {
                     name="refreshToken"
                     render={({ field }) => (
                       <FormItem className="md:col-span-2">
-                        <FormLabel>Refresh Token</FormLabel>
+                        <FormLabel>
+                          Refresh Token
+                          <HoverCard>
+                            <HoverCardTrigger asChild>
+                              <div className="flex items-center ml-1 gap-0.5">
+                                <CircleQuestionMark className="h-4 w-4" />
+                              </div>
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              {t('questions.hoverRefreshToken')}
+                            </HoverCardContent>
+                          </HoverCard>
+                        </FormLabel>
                         <FormControl>
                           <Input placeholder="Refresh Token" {...field} />
                         </FormControl>
