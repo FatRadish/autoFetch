@@ -73,6 +73,7 @@ pnpm dev
 - 前端开发服务器: http://localhost:5173
 - 后端 API 服务: http://localhost:3000
 - Prisma Studio: `pnpm --filter backend prisma:studio`
+- 默认账号密码: admin/admin123
 
 ## 📁 项目结构
 
