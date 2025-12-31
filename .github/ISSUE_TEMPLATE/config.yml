@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discussions
+    url: https://github.com/FatRadish/autoFetch/discussions
+    about: 在 Discussions 中提问或讨论更广泛的问题
