@@ -14,6 +14,7 @@ function App() {
 
   useEffect(() => {
     request.setTranslator(t);
+    request.setRouter(router);
   }, [t]);
 
   return (

@@ -6,9 +6,10 @@ import axios, {
 } from 'axios';
 import type { ApiResponse } from './types.ts';
 import { useAuthStore } from '@/store/authStore';
+import type { createHashRouter } from 'react-router-dom';
 
 // `useTranslation().t` 在类型上通常接受更具体的 key 联合类型并可接收可选的插值参数。
-// 为了让它可被注入，我们将 `Translator` 定义为更通用的签名。
+// 为了让它可被注入,我们将 `Translator` 定义为更通用的签名。
 type Translator = (key: any, interpolation?: Record<string, any>) => string;
 /**
  * Axios 封装类 - 专为 React Query 优化
@@ -16,6 +17,7 @@ type Translator = (key: any, interpolation?: Record<string, any>) => string;
 class Request {
   private instance: AxiosInstance;
   private translator?: Translator;
+  private router?: ReturnType<typeof createHashRouter>;
 
   constructor(config: AxiosRequestConfig) {
     this.instance = axios.create(config);
@@ -27,6 +29,13 @@ class Request {
    */
   setTranslator(fn: Translator) {
     this.translator = fn;
+  }
+
+  /**
+   * 设置路由实例（用于在拦截器中进行路由跳转）
+   */
+  setRouter(router: ReturnType<typeof createHashRouter>) {
+    this.router = router;
   }
 
   /**
@@ -68,8 +77,12 @@ class Request {
 
           // 401 特殊处理
           if (status === 401) {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
+            if (this.router) {
+              this.router.navigate('/login');
+            } else {
+              // 降级处理：如果router未设置，使用location跳转
+              window.location.href = '#/login';
+            }
           }
 
           throw new Error(message);
