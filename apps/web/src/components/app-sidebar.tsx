@@ -1,6 +1,5 @@
 import {
   FileCheck,
-  Home,
   ChevronDown,
   User2,
   ChevronUp,

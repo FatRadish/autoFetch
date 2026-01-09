@@ -128,7 +128,7 @@ export const schemas = {
       })
       .optional(),
     enabled: z.boolean().optional(),
-    refreshToken: z.string().min(1).nullable().optional(),
+    refreshToken: z.string().nullable().optional(),
     lastRefreshTime: z.coerce.date().nullable().optional(),
   }),
 
