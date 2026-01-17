@@ -4,5 +4,5 @@ logs
 .env
 
 /generated/prisma
-
+debug-login-check.png
 *.db
